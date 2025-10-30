@@ -1,0 +1,34 @@
+DROP TABLE IF EXISTS occupations;
+
+CREATE TABLE occupations (
+    name VARCHAR(50),
+    occupation VARCHAR(20)
+);
+
+INSERT INTO occupations (name, occupation) VALUES
+('om', 'Doctor'),
+('Atul', 'Engineer'),
+('bnti', 'Artist'),
+('vir', 'Teacher'),
+('ishan', 'Chef'),
+('priya', 'Lawyer'),
+('riya', 'Scientist'),
+('himanshu', 'Nurse');
+
+
+SELECT 
+    CONCAT(name, '(', SUBSTRING(occupation, 1, 1), ')') AS result
+FROM occupations
+ORDER BY name;
+
+SELECT 
+    CONCAT('There are a total of ', COUNT(*), ' ', LOWER(occupation), 's') AS result
+FROM occupations
+GROUP BY occupation
+ORDER BY COUNT(*), occupation;
+
+select * from occupations;
+
+
+
+
