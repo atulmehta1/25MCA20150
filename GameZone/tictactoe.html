@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe</title>
+  <link rel="stylesheet" href="tictactoe.css">
+</head>
+<body>
+  <header>
+    <h1>🎮 Tic Tac Toe</h1>
+    <p id="turn-display">Player O's Turn</p>
+  </header>
+
+  <main class="board-container">
+    <div class="board">
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+    </div>
+
+    <div class="msg-container hide">
+      <p id="msg"></p>
+      <button id="new-btn" class="play-btn">New Game</button>
+      <button id="reset-btn" class="play-btn">Reset Board</button>
+    </div>
+
+    <div class="scoreboard">
+      <p>Player X Wins: <span id="score-x">0</span></p>
+      <p>Player O Wins: <span id="score-o">0</span></p>
+    </div>
+
+    <a href="gamehub.html" class="play-btn back-btn">🏠 Back to Game Zone</a>
+  </main>
+
+  <script src="tictactoe.js"></script>
+</body>
+</html>
