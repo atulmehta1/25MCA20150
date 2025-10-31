@@ -46,7 +46,7 @@ int main() {
         } else if (guess < number) {
             cout << "Too low!\n";
         } else {
-            cout << "🎉 Correct, " << name << "! You guessed it in " << tries << " tries.\n";
+            cout << " Correct, " << name << "! You guessed it in " << tries << " tries.\n";
             break;
         }
 
