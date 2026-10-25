@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unified Dashboard | AI Technical Training Platform</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/course.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="../index.html" class="logo-brand">
+        <div class="brand-icon">AI</div>
+        <span>AI Tech<span class="gradient-text">Train</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="courses.html" class="nav-link">Courses</a></li>
+        <li><a href="ai-hub.html" class="nav-link">AI Hub</a></li>
+        <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+        <li><a href="forum.html" class="nav-link">Forum</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="theme-toggle-btn" class="btn-icon" onclick="app.toggleTheme()" style="font-size: 0.8rem; font-weight: 700;">Theme</button>
+        <div id="nav-user-slot"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-top: 2rem;">
+    <!-- Role Switcher Quick Bar (Viva/Demonstration helper) -->
+    <div class="card" style="margin-bottom: 2rem; background: var(--bg-card); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-color: var(--border-glow);">
+      <div>
+        <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.5px;">
+          Switch Active Role:
+        </span>
+        <span style="font-size: 0.85rem; color: var(--text-secondary); margin-left: 0.5rem;">
+          Test any role immediately without logging out
+        </span>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn btn-secondary btn-sm" onclick="auth.switchRole('student'); dashboardModule.initDashboard();">
+          Student View
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="auth.switchRole('trainer'); dashboardModule.initDashboard();">
+          Trainer View
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="auth.switchRole('admin'); dashboardModule.initDashboard();">
+          Admin View
+        </button>
+      </div>
+    </div>
+
+    <!-- Dynamic Content Slot (Student / Trainer / Admin) -->
+    <div id="dashboard-dynamic-content">
+      <!-- Injected by dashboard.js -->
+    </div>
+  </main>
+
+  <footer style="margin-top: 4rem;">
+    <div class="container footer-bottom">
+      <span>AI Technical Training Platform • Multi-Role Unified Dashboard</span>
+      <a href="../index.html" style="color: var(--accent-cyan);">Back to Home</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/dashboard.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      dashboardModule.initDashboard();
+    });
+  </script>
+</body>
+</html>

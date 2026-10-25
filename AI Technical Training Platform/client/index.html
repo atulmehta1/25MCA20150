@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Technical Training Platform | Next-Gen MCA E-Learning</title>
+  <meta name="description" content="AI Technical Training Platform with Student, Trainer, Admin roles and 5 intelligent AI learning assistants.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/ai-tools.css">
+  <link rel="stylesheet" href="css/course.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo-brand">
+        <div class="brand-icon">AI</div>
+        <span>AI Tech<span class="gradient-text">Train</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="pages/courses.html" class="nav-link">Courses</a></li>
+        <li><a href="pages/ai-hub.html" class="nav-link">AI Hub</a></li>
+        <li><a href="pages/dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="pages/leaderboard.html" class="nav-link">Leaderboard</a></li>
+        <li><a href="pages/forum.html" class="nav-link">Forum</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <!-- Theme Toggle -->
+        <button id="theme-toggle-btn" class="btn-icon" onclick="app.toggleTheme()" title="Toggle Dark/Light Mode" style="font-size: 0.8rem; font-weight: 700;">Theme</button>
+
+        <!-- Notification Bell -->
+        <div style="position: relative;">
+          <button id="notif-bell-btn" class="btn-icon" title="Notifications" style="font-size: 0.8rem; font-weight: 700;">
+            Alerts<span style="position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent-rose); border-radius: 50%;"></span>
+          </button>
+          
+          <div id="notif-dropdown-menu" class="notif-menu">
+            <div style="padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 700; display: flex; justify-content: space-between; align-items: center;">
+              <span>Notifications</span>
+              <span class="badge badge-cyan">4 New</span>
+            </div>
+            <div class="notif-item">
+              <strong>New Lesson Added</strong>
+              <div style="color: var(--text-secondary); font-size: 0.8rem;">Dr. Priya Nair uploaded Lesson 5 on Dynamic UI Architecture.</div>
+            </div>
+            <div class="notif-item">
+              <strong>Daily Streak Maintained!</strong>
+              <div style="color: var(--text-secondary); font-size: 0.8rem;">You completed Day 7 streak! Earned +10 XP bonus.</div>
+            </div>
+            <div class="notif-item">
+              <strong>Quiz Assessment Available</strong>
+              <div style="color: var(--text-secondary); font-size: 0.8rem;">Web Development final assessment is live. Score 70%+ for certificate.</div>
+            </div>
+            <div style="padding: 0.6rem; text-align: center; background: var(--bg-primary);">
+              <a href="pages/dashboard.html" style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 600;">View All Notifications →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- User slot (Auth & Role Switcher injected by auth.js) -->
+        <div id="nav-user-slot"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Elevate Technical Skills with <br><span class="gradient-text">Next-Gen AI Mentorship</span></h1>
+        <p>
+          Master Full Stack, Data Structures, Python, SQL, and Cloud with interactive video lessons, automated assessments, verified certificates, and 5 intelligent AI learning tools.
+        </p>
+
+        <div class="hero-actions">
+          <a href="pages/courses.html" class="btn btn-primary">Explore Courses</a>
+          <a href="pages/ai-hub.html" class="btn btn-secondary">Launch AI Hub</a>
+          <a href="pages/login.html" class="btn btn-secondary">Test User Roles</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 Roles Architecture Highlight -->
+    <section class="container" style="margin-bottom: 3.5rem;">
+      <div class="section-header" style="text-align: center; display: block; margin-bottom: 2rem;">
+        <h2 class="section-title">Multi-Role Enterprise Architecture</h2>
+        <p class="section-subtitle">Switch instantly between roles using the navbar dropdown or explore their workflows below:</p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Student Role Card -->
+        <div class="card" style="border-top: 4px solid var(--accent-cyan);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 0.75rem;">[Role: Student]</div>
+          <h3 style="margin-bottom: 0.5rem;">Student Portal</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+            Enroll in technical courses, watch interactive lessons with progress tracking, take timed quizzes, earn XP & badges, and download verified certificates.
+          </p>
+          <ul style="color: var(--text-muted); font-size: 0.85rem; padding-left: 1.25rem; margin-bottom: 1.25rem;">
+            <li>Daily streak counter & XP points</li>
+            <li>In-browser coding runner & practice</li>
+            <li>AI Tutor & Code Explainer</li>
+          </ul>
+          <button class="btn btn-secondary btn-sm" style="width: 100%;" onclick="auth.switchRole('student'); window.location.href='pages/dashboard.html';">
+            Switch to Student View →
+          </button>
+        </div>
+
+        <!-- Trainer Role Card -->
+        <div class="card" style="border-top: 4px solid var(--accent-purple);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase; margin-bottom: 0.75rem;">[Role: Trainer]</div>
+          <h3 style="margin-bottom: 0.5rem;">Trainer Portal</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+            Design curriculum, upload video lessons & PDF notes, generate quizzes, monitor student progress, and answer questions with official verified badges.
+          </p>
+          <ul style="color: var(--text-muted); font-size: 0.85rem; padding-left: 1.25rem; margin-bottom: 1.25rem;">
+            <li>Course creation & lesson uploader</li>
+            <li>Student enrollment analytics</li>
+            <li>Trainer verified forum answers</li>
+          </ul>
+          <button class="btn btn-secondary btn-sm" style="width: 100%;" onclick="auth.switchRole('trainer'); window.location.href='pages/dashboard.html';">
+            Switch to Trainer View →
+          </button>
+        </div>
+
+        <!-- Admin Role Card -->
+        <div class="card" style="border-top: 4px solid var(--accent-rose);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent-rose); text-transform: uppercase; margin-bottom: 0.75rem;">[Role: Admin]</div>
+          <h3 style="margin-bottom: 0.5rem;">Administrator</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+            Comprehensive platform governance: approve instructor applications, manage registered users, monitor course completion rates, and verify certificates.
+          </p>
+          <ul style="color: var(--text-muted); font-size: 0.85rem; padding-left: 1.25rem; margin-bottom: 1.25rem;">
+            <li>Trainer approval & KYC verification</li>
+            <li>Platform analytics & completion stats</li>
+            <li>Certificate verification system</li>
+          </ul>
+          <button class="btn btn-secondary btn-sm" style="width: 100%;" onclick="auth.switchRole('admin'); window.location.href='pages/dashboard.html';">
+            Switch to Admin View →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 Core AI Features Section -->
+    <section class="container" style="margin-bottom: 4rem;">
+      <div class="card" style="background: linear-gradient(135deg, rgba(23, 32, 54, 0.9) 0%, rgba(17, 25, 46, 0.9) 100%); border-color: var(--border-glow);">
+        <div class="section-header">
+          <div>
+            <span class="badge badge-cyan" style="margin-bottom: 0.5rem;">High-Impact AI Modules</span>
+            <h2 class="section-title">5 Intelligent AI Learning Assistants</h2>
+            <p class="section-subtitle">Real-time AI assistance tailored for MCA, BCA, and Engineering technical interviews</p>
+          </div>
+          <a href="pages/ai-hub.html" class="btn btn-primary">Open Full AI Hub →</a>
+        </div>
+
+        <div class="grid-3" style="margin-top: 1.5rem;">
+          <!-- 1. AI Tutor -->
+          <div class="card" style="background: var(--bg-primary);">
+            <div class="badge badge-cyan" style="margin-bottom: 0.5rem;">AI Module 1</div>
+            <h4 style="color: var(--accent-cyan); margin-bottom: 0.25rem;">1. AI Chat Tutor</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Ask programming questions and get instant conceptual breakdowns with clean code snippets.
+            </p>
+            <div style="font-size: 0.75rem; color: var(--text-muted); background: var(--bg-card); padding: 0.5rem; border-radius: 4px;">
+              e.g. "Explain promises in JavaScript"
+            </div>
+          </div>
+
+          <!-- 2. AI Code Explainer -->
+          <div class="card" style="background: var(--bg-primary);">
+            <div class="badge badge-purple" style="margin-bottom: 0.5rem;">AI Module 2</div>
+            <h4 style="color: var(--accent-purple); margin-bottom: 0.25rem;">2. AI Code Explainer</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Paste code to receive line-by-line explanations, logic summaries, and Big-O time complexity.
+            </p>
+            <div style="font-size: 0.75rem; color: var(--text-muted); background: var(--bg-card); padding: 0.5rem; border-radius: 4px;">
+              Time & Space Complexity Analyzer
+            </div>
+          </div>
+
+          <!-- 3. AI Quiz Generator -->
+          <div class="card" style="background: var(--bg-primary);">
+            <div class="badge badge-green" style="margin-bottom: 0.5rem;">AI Module 3</div>
+            <h4 style="color: var(--accent-green); margin-bottom: 0.25rem;">3. AI Quiz Generator</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Select any technical topic (Node.js, Python, React, SQL) to auto-generate custom MCQs.
+            </p>
+            <div style="font-size: 0.75rem; color: var(--text-muted); background: var(--bg-card); padding: 0.5rem; border-radius: 4px;">
+              Instant grading & detailed explanations
+            </div>
+          </div>
+
+          <!-- 4. AI Interview Prep -->
+          <div class="card" style="background: var(--bg-primary);">
+            <div class="badge badge-amber" style="margin-bottom: 0.5rem;">AI Module 4</div>
+            <h4 style="color: var(--accent-amber); margin-bottom: 0.25rem;">4. AI Mock Interview</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Simulate technical and HR placement interview rounds with AI answer evaluation and model answers.
+            </p>
+            <div style="font-size: 0.75rem; color: var(--text-muted); background: var(--bg-card); padding: 0.5rem; border-radius: 4px;">
+              STAR Method & Technical Scoring
+            </div>
+          </div>
+
+          <!-- 5. AI Resume Review -->
+          <div class="card" style="background: var(--bg-primary);">
+            <div class="badge badge-rose" style="margin-bottom: 0.5rem;">AI Module 5</div>
+            <h4 style="color: var(--accent-rose); margin-bottom: 0.25rem;">5. AI Resume Review</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Paste resume text to get ATS compatibility score (0-100%), missing skills, and improvement tips.
+            </p>
+            <div style="font-size: 0.75rem; color: var(--text-muted); background: var(--bg-card); padding: 0.5rem; border-radius: 4px;">
+              ATS Keyword Parser & Course Recommendations
+            </div>
+          </div>
+
+          <!-- Quick AI Demo Box -->
+          <div class="card" style="background: var(--bg-primary); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+            <div class="badge badge-cyan" style="margin-bottom: 0.5rem;">Interactive</div>
+            <h4>Try All AI Features Live</h4>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">No setup or API key required!</p>
+            <a href="pages/ai-hub.html" class="btn btn-primary btn-sm">Launch Interactive AI Hub →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Courses Section -->
+    <section class="container" style="margin-bottom: 4rem;">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Popular Technical Courses</h2>
+          <p class="section-subtitle">Structured paths aligned with university syllabus & industry recruitments</p>
+        </div>
+        <a href="pages/courses.html" class="btn btn-secondary btn-sm">View All Courses →</a>
+      </div>
+
+      <div id="featured-courses-grid" class="grid-3">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- Gamification Banner -->
+    <section class="container" style="margin-bottom: 4rem;">
+      <div class="card" style="background: radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.15) 0%, rgba(23, 32, 54, 0.7) 60%);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+          <div>
+            <div class="badge badge-amber" style="margin-bottom: 0.5rem;">Gamified Learning</div>
+            <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Earn XP Points, Badges & Compete on Leaderboard</h2>
+            <p style="color: var(--text-secondary); max-width: 650px; font-size: 0.95rem;">
+              Complete lessons (+10 XP), pass quizzes (+20 XP), finish courses (+100 XP), maintain daily streaks, and unlock Beginner, Intermediate, Advanced, and Expert Badges!
+            </p>
+          </div>
+          <a href="pages/leaderboard.html" class="btn btn-primary">View Global Leaderboard →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2rem; margin-bottom: 2rem;">
+        <div>
+          <div class="logo-brand" style="margin-bottom: 0.75rem;">
+            <div class="brand-icon">AI</div>
+            <span>AI Tech<span class="gradient-text">Train</span></span>
+          </div>
+          <p style="color: var(--text-secondary); max-width: 320px; font-size: 0.9rem;">
+            A full-stack, AI-powered e-learning platform developed for MCA Technical Training & Placement Preparation.
+          </p>
+        </div>
+
+        <div>
+          <h4 style="margin-bottom: 0.75rem; font-size: 0.95rem;">Learning Modules</h4>
+          <ul style="list-style: none; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.4rem;">
+            <li><a href="pages/courses.html">Web Development</a></li>
+            <li><a href="pages/courses.html">Data Structures & Java</a></li>
+            <li><a href="pages/courses.html">Python & AI Foundations</a></li>
+            <li><a href="pages/courses.html">SQL & Databases</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style="margin-bottom: 0.75rem; font-size: 0.95rem;">AI Tools</h4>
+          <ul style="list-style: none; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.4rem;">
+            <li><a href="pages/ai-hub.html">AI Chat Tutor</a></li>
+            <li><a href="pages/ai-hub.html">AI Code Explainer</a></li>
+            <li><a href="pages/ai-hub.html">AI Quiz Generator</a></li>
+            <li><a href="pages/ai-hub.html">AI Resume Review</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style="margin-bottom: 0.75rem; font-size: 0.95rem;">Demo Portals</h4>
+          <ul style="list-style: none; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.4rem;">
+            <li><a href="#" onclick="auth.switchRole('student'); window.location.href='pages/dashboard.html';">Student Dashboard</a></li>
+            <li><a href="#" onclick="auth.switchRole('trainer'); window.location.href='pages/dashboard.html';">Trainer Dashboard</a></li>
+            <li><a href="#" onclick="auth.switchRole('admin'); window.location.href='pages/dashboard.html';">Admin Dashboard</a></li>
+            <li><a href="pages/certificate.html">Certificate Verification</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2024 AI Technical Training Platform • MCA Mini Project</span>
+        <span>Made with Vanilla HTML5, CSS3, ES6 JavaScript & Node.js</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/course.js"></script>
+
+  <script>
+    // Load top 3 featured courses on home page
+    document.addEventListener('DOMContentLoaded', async () => {
+      await courseModule.fetchCourses();
+      const featured = courseModule.courses.slice(0, 3);
+      const container = document.getElementById('featured-courses-grid');
+      if (container) {
+        container.innerHTML = featured.map(c => `
+          <div class="card course-card">
+            <div class="course-thumb-wrap">
+              <img src="${c.thumbnail}" alt="${c.title}">
+              <span class="course-category-tag">${c.category}</span>
+            </div>
+            <div class="course-body">
+              <h3 class="course-title">${c.title}</h3>
+              <p class="course-desc">${c.description}</p>
+              
+              <div class="course-meta">
+                <span>Duration: ${c.duration}</span>
+                <span>Rating: ${c.rating} (${c.enrollments})</span>
+              </div>
+
+              <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                <a href="pages/lesson.html?courseId=${c.id}" class="btn btn-primary btn-sm" style="flex: 1;">Start Learning</a>
+                <a href="pages/courses.html" class="btn btn-secondary btn-sm">Explore</a>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+    });
+  </script>
+</body>
+</html>

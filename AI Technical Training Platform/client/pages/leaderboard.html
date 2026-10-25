@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard & Gamification Arena | AI TechTrain</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="../index.html" class="logo-brand">
+        <div class="brand-icon">AI</div>
+        <span>AI Tech<span class="gradient-text">Train</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="courses.html" class="nav-link">Courses</a></li>
+        <li><a href="ai-hub.html" class="nav-link">AI Hub</a></li>
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="leaderboard.html" class="nav-link active">Leaderboard</a></li>
+        <li><a href="forum.html" class="nav-link">Forum</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="theme-toggle-btn" class="btn-icon" onclick="app.toggleTheme()" style="font-size: 0.8rem; font-weight: 700;">Theme</button>
+        <div id="nav-user-slot"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-top: 2.5rem;">
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <span class="badge badge-amber" style="margin-bottom: 0.5rem;">Competitive Learning</span>
+      <h1 style="font-size: 2.4rem; margin-bottom: 0.5rem;">Global <span class="gradient-text">Leaderboard</span> & Ranks</h1>
+      <p style="color: var(--text-secondary); max-width: 650px; margin: 0 auto;">
+        Compete with fellow computer science students, maintain daily learning streaks, and solve algorithmic challenges to earn XP.
+      </p>
+    </div>
+
+    <!-- Top 3 Podium Cards -->
+    <div class="grid-3" style="margin-bottom: 2.5rem;">
+      <!-- Rank 2 -->
+      <div class="card" style="text-align: center; border-color: rgba(203, 213, 225, 0.4); transform: translateY(12px);">
+        <span class="badge badge-cyan" style="margin-bottom: 0.5rem; display: inline-block;">Rank #2</span>
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Karthik" alt="Karthik" style="width: 60px; height: 60px; border-radius: 50%; margin-bottom: 0.5rem; background: var(--bg-secondary);">
+        <h3 style="font-size: 1.15rem;">Karthik Verma</h3>
+        <div style="font-size: 1.3rem; font-weight: 800; color: var(--accent-amber); margin-top: 0.3rem;">720 XP</div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">11 Days Streak</div>
+      </div>
+
+      <!-- Rank 1 (Gold) -->
+      <div class="card" style="text-align: center; border-color: var(--accent-amber); box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);">
+        <span class="badge badge-amber" style="margin-bottom: 0.5rem; display: inline-block;">Leader Rank #1</span>
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Ananya" alt="Ananya" style="width: 72px; height: 72px; border-radius: 50%; margin-bottom: 0.5rem; border: 2px solid var(--accent-amber); background: var(--bg-secondary);">
+        <h3 style="font-size: 1.25rem; font-weight: 800;">Ananya Sen</h3>
+        <div class="gradient-text" style="font-size: 1.6rem; font-weight: 800; margin-top: 0.3rem;">890 XP</div>
+        <div style="font-size: 0.85rem; color: var(--text-secondary);">14 Days Streak • 4 Badges</div>
+      </div>
+
+      <!-- Rank 3 (You) -->
+      <div class="card" style="text-align: center; border-color: rgba(205, 127, 50, 0.5); transform: translateY(16px);">
+        <span class="badge badge-purple" style="margin-bottom: 0.5rem; display: inline-block;">Rank #3</span>
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Atul" alt="Atul" style="width: 60px; height: 60px; border-radius: 50%; margin-bottom: 0.5rem; background: var(--bg-secondary);">
+        <h3 style="font-size: 1.15rem;">Atul Mehta (You)</h3>
+        <div style="font-size: 1.3rem; font-weight: 800; color: var(--accent-amber); margin-top: 0.3rem;">420 XP</div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">7 Days Streak</div>
+      </div>
+    </div>
+
+    <!-- Leaderboard Table -->
+    <div class="card" style="margin-bottom: 3.5rem;">
+      <div class="section-header" style="margin-bottom: 1.25rem;">
+        <div>
+          <h3 style="font-size: 1.2rem;">Learner Standings</h3>
+          <p class="section-subtitle">Real-time point updates from completed lessons and quizzes</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-primary btn-sm">Overall</button>
+          <button class="btn btn-secondary btn-sm" onclick="app.showToast('Showing Weekly Standings', 'info')">Weekly</button>
+          <button class="btn btn-secondary btn-sm" onclick="app.showToast('Showing Monthly Standings', 'info')">Monthly</button>
+        </div>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Learner</th>
+              <th>Total XP</th>
+              <th>Streak</th>
+              <th>Badges</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>#1</strong></td>
+              <td style="display: flex; align-items: center; gap: 0.6rem;">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Ananya" width="28" height="28" style="border-radius: 50%;">
+                <span>Ananya Sen</span>
+              </td>
+              <td><strong style="color: var(--accent-amber);">890 XP</strong></td>
+              <td>14 Days</td>
+              <td>4 Badges</td>
+              <td><span class="badge badge-green">Online</span></td>
+            </tr>
+            <tr>
+              <td><strong>#2</strong></td>
+              <td style="display: flex; align-items: center; gap: 0.6rem;">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Karthik" width="28" height="28" style="border-radius: 50%;">
+                <span>Karthik Verma</span>
+              </td>
+              <td><strong style="color: var(--accent-amber);">720 XP</strong></td>
+              <td>11 Days</td>
+              <td>3 Badges</td>
+              <td><span class="badge badge-cyan">In Lesson</span></td>
+            </tr>
+            <tr style="background: rgba(56, 189, 248, 0.06);">
+              <td><strong>#3</strong></td>
+              <td style="display: flex; align-items: center; gap: 0.6rem;">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Atul" width="28" height="28" style="border-radius: 50%;">
+                <strong>Atul Mehta (You)</strong>
+              </td>
+              <td><strong style="color: var(--accent-amber);">420 XP</strong></td>
+              <td>7 Days</td>
+              <td>3 Badges</td>
+              <td><span class="badge badge-green">Active</span></td>
+            </tr>
+            <tr>
+              <td><strong>#4</strong></td>
+              <td style="display: flex; align-items: center; gap: 0.6rem;">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Sneha" width="28" height="28" style="border-radius: 50%;">
+                <span>Sneha Patel</span>
+              </td>
+              <td><strong style="color: var(--accent-amber);">390 XP</strong></td>
+              <td>5 Days</td>
+              <td>2 Badges</td>
+              <td><span style="color: var(--text-muted); font-size: 0.8rem;">Offline</span></td>
+            </tr>
+            <tr>
+              <td><strong>#5</strong></td>
+              <td style="display: flex; align-items: center; gap: 0.6rem;">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Rohan" width="28" height="28" style="border-radius: 50%;">
+                <span>Rohan Gupta</span>
+              </td>
+              <td><strong style="color: var(--accent-amber);">310 XP</strong></td>
+              <td>4 Days</td>
+              <td>2 Badges</td>
+              <td><span style="color: var(--text-muted); font-size: 0.8rem;">Offline</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Badges Tier Guide -->
+    <div class="card" style="margin-bottom: 3.5rem;">
+      <h3 style="font-size: 1.2rem; margin-bottom: 1.25rem;">Achievement Badges Tier System</h3>
+      <div class="grid-4">
+        <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); text-align: center;">
+          <span class="badge badge-cyan" style="margin-bottom: 0.5rem; display: inline-block;">Tier 1</span>
+          <h4 style="font-size: 1rem; color: var(--accent-cyan);">Beginner</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">Enrolled in 1st course</p>
+        </div>
+        <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); text-align: center;">
+          <span class="badge badge-purple" style="margin-bottom: 0.5rem; display: inline-block;">Tier 2</span>
+          <h4 style="font-size: 1rem; color: var(--accent-purple);">Intermediate</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">Earned 300+ XP</p>
+        </div>
+        <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); text-align: center;">
+          <span class="badge badge-amber" style="margin-bottom: 0.5rem; display: inline-block;">Tier 3</span>
+          <h4 style="font-size: 1rem; color: var(--accent-amber);">Advanced</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">Passed 3 Quizzes (80%+)</p>
+        </div>
+        <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); text-align: center;">
+          <span class="badge badge-green" style="margin-bottom: 0.5rem; display: inline-block;">Tier 4</span>
+          <h4 style="font-size: 1rem; color: var(--accent-green);">Expert</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">Earned 1000+ XP Points</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-bottom">
+      <span>AI Technical Training Platform • Gamification & Standings</span>
+      <a href="../index.html" style="color: var(--accent-cyan);">Back to Home</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

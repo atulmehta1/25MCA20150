@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Classroom | AI Technical Training Platform</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/course.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="../index.html" class="logo-brand">
+        <div class="brand-icon">AI</div>
+        <span>AI Tech<span class="gradient-text">Train</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="courses.html" class="nav-link">Courses</a></li>
+        <li><a href="ai-hub.html" class="nav-link">AI Hub</a></li>
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="theme-toggle-btn" class="btn-icon" onclick="app.toggleTheme()" style="font-size: 0.8rem; font-weight: 700;">Theme</button>
+        <div id="nav-user-slot"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-top: 1.75rem;">
+    <!-- Course & Progress Bar Header -->
+    <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <span id="course-header-category" class="badge badge-cyan" style="margin-bottom: 0.25rem;">Category</span>
+        <h1 id="course-header-title" style="font-size: 1.8rem;">Course Title</h1>
+      </div>
+
+      <div style="min-width: 260px;">
+        <div id="classroom-progress-label" style="font-size: 0.85rem; color: var(--text-secondary); text-align: right; margin-bottom: 0.25rem;">
+          60% Completed (3/5 Lessons)
+        </div>
+        <div class="progress-bar-wrap">
+          <div id="classroom-progress-fill" class="progress-bar-fill" style="width: 60%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Classroom 2-Column Layout -->
+    <div class="classroom-layout">
+      <!-- Left Column: Video Player, Notes & Coding Practice -->
+      <div>
+        <!-- Video Player -->
+        <div class="video-container">
+          <video id="lesson-video-player" class="video-player" controls preload="metadata">
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <!-- Lesson Meta & Action Bar -->
+        <div class="card" style="margin-top: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+            <div>
+              <h2 id="current-lesson-title" style="font-size: 1.3rem; margin-bottom: 0.25rem;">Lesson Title</h2>
+              <p id="current-lesson-summary" style="color: var(--text-secondary); font-size: 0.9rem;">Lesson summary details...</p>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-primary btn-sm" onclick="courseModule.markCurrentLessonComplete()">
+                Mark Completed (+10 XP)
+              </button>
+              <a id="pdf-download-btn" href="#" class="btn btn-secondary btn-sm" onclick="app.showToast('Downloading verified PDF Study Notes...', 'success'); return false;">
+                Download Notes (.pdf)
+              </a>
+              <button class="btn btn-secondary btn-sm" onclick="app.showToast('Lesson saved to Favorites', 'info')">
+                Favorite
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- In-Browser Coding Practice Arena -->
+        <div class="code-practice-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <span class="badge badge-purple" style="margin-bottom: 0.25rem;">Hands-On Coding Practice</span>
+              <h3 id="practice-title" style="font-size: 1.15rem;">Coding Exercise</h3>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm" onclick="courseModule.toggleSolution()">View Solution</button>
+              <button class="btn btn-primary btn-sm" onclick="courseModule.runCodePractice()">Run Code</button>
+            </div>
+          </div>
+
+          <p id="practice-instruction" style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Instructions for the coding challenge...
+          </p>
+
+          <textarea id="practice-code-area" class="code-editor-box" style="min-height: 160px;"></textarea>
+
+          <pre id="practice-console-output" class="code-output-box" style="display: none;"></pre>
+          <pre id="practice-solution-box" class="code-output-box" style="display: none; border-color: var(--accent-purple); color: var(--accent-purple);"></pre>
+        </div>
+      </div>
+
+      <!-- Right Column: Course Playlist & Final Assessment CTA -->
+      <div>
+        <div class="playlist-card">
+          <div class="playlist-header">
+            <h3 style="font-size: 1.05rem;">Course Curriculum</h3>
+            <span class="badge badge-cyan">Syllabus</span>
+          </div>
+
+          <div id="playlist-items-container" class="playlist-items">
+            <!-- Injected by course.js -->
+          </div>
+
+          <!-- Final Assessment CTA -->
+          <div style="padding: 1.25rem; background: var(--bg-card); border-top: 1px solid var(--border-color); text-align: center;">
+            <h4 style="font-size: 0.95rem; margin-bottom: 0.35rem;">Ready for Certification?</h4>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.85rem;">
+              Complete lessons and pass the final assessment (70%+) to earn your verified certificate.
+            </p>
+            <a id="classroom-quiz-link" href="quiz.html?courseId=c1" class="btn btn-primary btn-sm" style="width: 100%;">
+              Take Course Assessment
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Ask AI Widget -->
+        <div class="card" style="margin-top: 1.5rem; text-align: center;">
+          <div class="badge badge-cyan" style="margin-bottom: 0.5rem;">AI Assistant</div>
+          <h4 style="font-size: 1rem; margin-bottom: 0.25rem;">Stuck on a Concept?</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.85rem;">
+            Ask the AI Tutor to explain line-by-line or analyze code complexity.
+          </p>
+          <a href="ai-hub.html" class="btn btn-secondary btn-sm" style="width: 100%;">Open AI Tutor →</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer style="margin-top: 3.5rem;">
+    <div class="container footer-bottom">
+      <span>AI Technical Training Platform • Classroom Experience</span>
+      <a href="courses.html" style="color: var(--accent-cyan);">Back to Catalog</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/course.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      courseModule.initClassroom();
+      const params = new URLSearchParams(window.location.search);
+      const cId = params.get('courseId') || 'c1';
+      document.getElementById('classroom-quiz-link').href = `quiz.html?courseId=${cId}`;
+    });
+  </script>
+</body>
+</html>

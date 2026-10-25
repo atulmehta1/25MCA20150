@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Hub - 5 Intelligent Assistants | AI TechTrain</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/ai-tools.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="../index.html" class="logo-brand">
+        <div class="brand-icon">AI</div>
+        <span>AI Tech<span class="gradient-text">Train</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="courses.html" class="nav-link">Courses</a></li>
+        <li><a href="ai-hub.html" class="nav-link active">AI Hub</a></li>
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+        <li><a href="forum.html" class="nav-link">Forum</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="theme-toggle-btn" class="btn-icon" onclick="app.toggleTheme()" style="font-size: 0.8rem; font-weight: 700;">Theme</button>
+        <div id="nav-user-slot"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-top: 2rem;">
+    <!-- AI Hub Header -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <span class="badge badge-purple" style="margin-bottom: 0.5rem;">Core AI Capabilities</span>
+      <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Technical <span class="gradient-text">AI Workspace</span></h1>
+      <p style="color: var(--text-secondary); max-width: 680px; margin: 0 auto;">
+        Interactive suite of 5 AI-powered tools designed to help students master coding, generate assessments, simulate technical interviews, and optimize resumes.
+      </p>
+    </div>
+
+    <!-- AI Navigation Tabs -->
+    <div class="ai-nav-tabs">
+      <button class="ai-tab-btn active" data-tab="tutor" onclick="ai.switchTab('tutor')">
+        1. AI Chat Tutor
+      </button>
+      <button class="ai-tab-btn" data-tab="explainer" onclick="ai.switchTab('explainer')">
+        2. AI Code Explainer
+      </button>
+      <button class="ai-tab-btn" data-tab="quizgen" onclick="ai.switchTab('quizgen')">
+        3. AI Quiz Generator
+      </button>
+      <button class="ai-tab-btn" data-tab="interview" onclick="ai.switchTab('interview')">
+        4. AI Mock Interview
+      </button>
+      <button class="ai-tab-btn" data-tab="resume" onclick="ai.switchTab('resume')">
+        5. AI Resume Review
+      </button>
+    </div>
+
+    <!-- TAB 1: AI Chat Tutor -->
+    <div id="tab-panel-tutor" class="ai-tab-panel ai-workspace">
+      <div class="ai-workspace-header">
+        <div>
+          <span class="ai-feature-tag">Feature 1: Interactive Mentorship</span>
+          <h2 style="margin-top: 0.5rem;">AI Chat Tutor</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Ask any programming or computer science question to receive clear conceptual breakdowns and code samples.
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Prompt Suggestions -->
+      <div style="margin-bottom: 1rem;">
+        <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Try Example Questions:</span>
+        <div class="quick-prompts">
+          <button class="quick-chip" onclick="ai.quickPrompt('Explain promises in JavaScript')">Explain promises in JavaScript</button>
+          <button class="quick-chip" onclick="ai.quickPrompt('How do closures and lexical scoping work in JS?')">How do closures work?</button>
+          <button class="quick-chip" onclick="ai.quickPrompt('Explain Binary Search algorithm and Big-O complexity')">Binary Search in O(log N)</button>
+          <button class="quick-chip" onclick="ai.quickPrompt('What is the difference between SQL and NoSQL databases?')">SQL vs NoSQL</button>
+        </div>
+      </div>
+
+      <!-- Chat Window -->
+      <div class="chat-window">
+        <div id="tutor-messages" class="chat-messages">
+          <div class="message-bubble message-ai">
+            <div style="font-weight: 700; color: var(--accent-cyan); margin-bottom: 0.25rem;">
+              Hello! I am your AI Technical Tutor.
+            </div>
+            Ask me any programming question, algorithm doubt, or syntax issue. Click a suggested prompt above or type your question below!
+          </div>
+        </div>
+
+        <div class="chat-input-bar">
+          <input type="text" id="tutor-input" class="form-control" placeholder="Ask a programming question (e.g., 'Explain promises in JavaScript')..." onkeypress="if(event.key === 'Enter') ai.sendTutorMessage()">
+          <button class="btn btn-primary" onclick="ai.sendTutorMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: AI Code Explainer -->
+    <div id="tab-panel-explainer" class="ai-tab-panel ai-workspace" style="display: none;">
+      <div class="ai-workspace-header">
+        <div>
+          <span class="ai-feature-tag">Feature 2: Code Intelligence</span>
+          <h2 style="margin-top: 0.5rem;">AI Code Explainer</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Paste any source code to receive line-by-line explanations, logic breakdown, time/space complexity, and improvement tips.
+          </p>
+        </div>
+        
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn btn-secondary btn-sm" onclick="ai.loadSampleCode('twosum')">Load Two-Sum (DSA)</button>
+          <button class="btn btn-secondary btn-sm" onclick="ai.loadSampleCode('async')">Load Async Fetch</button>
+        </div>
+      </div>
+
+      <div class="grid-2" style="align-items: start;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <label class="form-label" style="margin-bottom: 0;">Source Code Input:</label>
+            <select id="code-lang-select" class="form-control" style="width: auto; padding: 0.25rem 0.6rem; font-size: 0.8rem;">
+              <option value="javascript">JavaScript</option>
+              <option value="python">Python</option>
+              <option value="java">Java</option>
+              <option value="cpp">C++</option>
+            </select>
+          </div>
+
+          <textarea id="code-input-area" class="code-editor-box" placeholder="// Paste your function or algorithm here..."></textarea>
+          
+          <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="ai.analyzeCode()">
+            Analyze Code & Generate Explanation
+          </button>
+        </div>
+
+        <div id="code-explain-result" class="card" style="display: none; background: var(--bg-primary); min-height: 280px;">
+          <!-- Result rendered by ai.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: AI Quiz Generator -->
+    <div id="tab-panel-quizgen" class="ai-tab-panel ai-workspace" style="display: none;">
+      <div class="ai-workspace-header">
+        <div>
+          <span class="ai-feature-tag">Feature 3: Assessment Automation</span>
+          <h2 style="margin-top: 0.5rem;">AI Quiz Generator</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Generate custom MCQs on any technical topic on-demand for quick self-assessment and placement test prep.
+          </p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 2rem; background: var(--bg-primary);">
+        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 240px;">
+            <label class="form-label">Topic or Technology:</label>
+            <input type="text" id="quiz-gen-topic" class="form-control" placeholder="e.g. Node.js, Python, React, SQL, Java DSA" value="Node.js">
+          </div>
+          <div style="align-self: flex-end;">
+            <button class="btn btn-primary" onclick="ai.generateDynamicQuiz()">
+              Generate 5 MCQs
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Quick Topics:</span>
+          <button class="quick-chip" onclick="document.getElementById('quiz-gen-topic').value='Node.js'; ai.generateDynamicQuiz();">Node.js</button>
+          <button class="quick-chip" onclick="document.getElementById('quiz-gen-topic').value='Python'; ai.generateDynamicQuiz();">Python</button>
+          <button class="quick-chip" onclick="document.getElementById('quiz-gen-topic').value='React'; ai.generateDynamicQuiz();">React</button>
+        </div>
+      </div>
+
+      <div id="quiz-gen-output">
+        <!-- Output injected by ai.js -->
+        <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+          Click <strong>"Generate 5 MCQs"</strong> above to construct an interactive test!
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: AI Mock Interview Prep -->
+    <div id="tab-panel-interview" class="ai-tab-panel ai-workspace" style="display: none;">
+      <div class="ai-workspace-header">
+        <div>
+          <span class="ai-feature-tag">Feature 4: Placement Readiness</span>
+          <h2 style="margin-top: 0.5rem;">AI Mock Technical & HR Interview</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Practice company technical interview questions, write answers, and receive instant AI evaluation feedback.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+          <select id="interview-role-select" class="form-control" style="width: auto;">
+            <option value="Full Stack Developer">Full Stack Developer</option>
+            <option value="Frontend Engineer">Frontend Engineer (React)</option>
+            <option value="Backend Engineer">Backend Engineer (Node/Python)</option>
+            <option value="Data Analyst">Data Analyst (SQL/Python)</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="ai.loadInterviewMock()">Start Interview Session</button>
+        </div>
+      </div>
+
+      <div id="interview-questions-box">
+        <!-- Injected by ai.js -->
+        <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+          Click <strong>"Start Interview Session"</strong> above to load interview questions tailored to your chosen role.
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: AI Resume Review -->
+    <div id="tab-panel-resume" class="ai-tab-panel ai-workspace" style="display: none;">
+      <div class="ai-workspace-header">
+        <div>
+          <span class="ai-feature-tag">Feature 5: Career Acceleration</span>
+          <h2 style="margin-top: 0.5rem;">AI Resume Review & ATS Optimizer</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Analyze your resume against current tech recruitment standards. Identify missing skills, ATS compatibility score, and suggested enhancements.
+          </p>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="ai.loadSampleResume()">Load Sample Student Resume</button>
+      </div>
+
+      <div class="grid-2" style="align-items: start;">
+        <div>
+          <label class="form-label">Paste Your Resume Plain Text:</label>
+          <textarea id="resume-text-input" class="form-control" style="min-height: 280px; font-family: monospace; font-size: 0.85rem;" placeholder="Paste resume text including Education, Skills, Projects, and Experience..."></textarea>
+          <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="ai.analyzeResume()">
+            Review Resume & Check ATS Score
+          </button>
+        </div>
+
+        <div id="resume-review-output" class="card" style="display: none; background: var(--bg-primary);">
+          <!-- Injected by ai.js -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer style="margin-top: 4rem;">
+    <div class="container footer-bottom">
+      <span>AI Technical Training Platform • 5 Core AI Features Suite</span>
+      <a href="../index.html" style="color: var(--accent-cyan);">Back to Home</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/ai.js"></script>
+
+  <script>
+    // Initialize default tab from URL if present
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab');
+      if (tab) {
+        ai.switchTab(tab);
+      }
+    });
+  </script>
+</body>
+</html>

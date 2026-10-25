@@ -1,0 +1,296 @@
+/* ==========================================================================
+   AI Tools Dedicated Styling (5 Core AI Modules)
+   ========================================================================== */
+
+/* AI Hub Navigation Tabs */
+.ai-nav-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--bg-card);
+  padding: 0.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.ai-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition);
+}
+
+.ai-tab-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ai-tab-btn.active {
+  background: var(--accent-gradient);
+  color: #0f172a;
+  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.25);
+}
+
+/* AI Tool Workspace Card */
+.ai-workspace {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+.ai-workspace-header {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.ai-feature-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: rgba(129, 140, 248, 0.15);
+  color: var(--accent-purple);
+  border: 1px solid rgba(129, 140, 248, 0.3);
+}
+
+/* Chat Tutor Layout */
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 520px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.message-bubble {
+  max-width: 85%;
+  padding: 1.1rem 1.4rem;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  position: relative;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message-user {
+  align-self: flex-end;
+  background: var(--accent-gradient);
+  color: #0f172a;
+  border-bottom-right-radius: 4px;
+  font-weight: 500;
+}
+
+.message-ai {
+  align-self: flex-start;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-bottom-left-radius: 4px;
+}
+
+.message-ai pre {
+  background: #070b14;
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  margin: 0.75rem 0;
+  overflow-x: auto;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  color: #38bdf8;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+.chat-input-bar {
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  gap: 0.75rem;
+}
+
+.quick-prompts {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.quick-chip {
+  padding: 0.35rem 0.85rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.quick-chip:hover {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.08);
+}
+
+/* Code Explainer Cards */
+.code-editor-box {
+  background: #070b14;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-family: 'Consolas', monospace;
+  padding: 1rem;
+  color: #e2e8f0;
+  width: 100%;
+  min-height: 220px;
+  outline: none;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.code-editor-box:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+}
+
+.complexity-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: rgba(52, 211, 153, 0.1);
+  color: var(--accent-green);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+/* ATS Resume Gauge */
+.ats-score-display {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.ats-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-full);
+  background: conic-gradient(var(--accent-green) calc(var(--score, 85) * 1%), rgba(255,255,255,0.1) 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.ats-circle::after {
+  content: "";
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  background: var(--bg-secondary);
+  position: absolute;
+}
+
+.ats-circle span {
+  position: relative;
+  z-index: 2;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent-green);
+}
+
+/* Quiz Generator Cards */
+.quiz-gen-card {
+  padding: 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  margin-bottom: 1rem;
+}
+
+.quiz-option-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  margin-top: 0.5rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.quiz-option-label:hover {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: var(--accent-cyan);
+}
+
+.quiz-option-label.correct {
+  background: rgba(52, 211, 153, 0.15);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+
+/* Interview Card */
+.interview-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.criteria-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--accent-amber);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}

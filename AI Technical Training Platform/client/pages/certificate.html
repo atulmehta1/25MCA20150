@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Official Certificate of Completion | AI TechTrain</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/course.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="../index.html" class="logo-brand">
+        <div class="brand-icon">AI</div>
+        <span>AI Tech<span class="gradient-text">Train</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="courses.html" class="nav-link">Courses</a></li>
+        <li><a href="ai-hub.html" class="nav-link">AI Hub</a></li>
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="theme-toggle-btn" class="btn-icon" onclick="app.toggleTheme()" style="font-size: 0.8rem; font-weight: 700;">Theme</button>
+        <div id="nav-user-slot"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-top: 2rem;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <span class="badge badge-green" style="margin-bottom: 0.5rem;">Verified Credential</span>
+      <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Certificate of <span class="gradient-text">Achievement</span></h1>
+      <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+        Awarded for passing 80%+ curriculum requirements and final assessment.
+      </p>
+    </div>
+
+    <!-- Canvas Preview Box -->
+    <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
+      <canvas id="cert-canvas" width="1000" height="700" style="max-width: 100%; height: auto; border-radius: var(--radius-lg); box-shadow: 0 15px 35px rgba(0,0,0,0.6); border: 1px solid var(--border-glow);"></canvas>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 3.5rem; flex-wrap: wrap;">
+      <button class="btn btn-primary" onclick="certModule.downloadCertificate()">
+        Download Certificate (High-Res PNG)
+      </button>
+      <button class="btn btn-secondary" onclick="window.print()">
+        Print / Save as PDF
+      </button>
+    </div>
+
+    <!-- Certificate Verification Arena -->
+    <div class="card" style="max-width: 680px; margin: 0 auto 4rem; background: var(--bg-secondary);">
+      <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">
+        Online Certificate Verification Tool
+      </h3>
+      <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1.25rem;">
+        Enter any certificate ID to verify authenticity against the platform ledger.
+      </p>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <input type="text" id="cert-verify-input" class="form-control" placeholder="e.g. CERT-2024-8841" value="CERT-2024-8841">
+        <button class="btn btn-primary" onclick="certModule.verifyCertificate(document.getElementById('cert-verify-input').value)">
+          Verify Now
+        </button>
+      </div>
+
+      <div id="verify-result-box" style="margin-top: 1.25rem; display: none;"></div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-bottom">
+      <span>AI Technical Training Platform • Verified Certificates</span>
+      <a href="../index.html" style="color: var(--accent-cyan);">Back to Home</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/certificate.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      certModule.initCertificatePage();
+    });
+  </script>
+</body>
+</html>

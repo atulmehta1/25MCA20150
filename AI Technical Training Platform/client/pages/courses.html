@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courses Catalog | AI Technical Training Platform</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/course.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="../index.html" class="logo-brand">
+        <div class="brand-icon">AI</div>
+        <span>AI Tech<span class="gradient-text">Train</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="courses.html" class="nav-link active">Courses</a></li>
+        <li><a href="ai-hub.html" class="nav-link">AI Hub</a></li>
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+        <li><a href="forum.html" class="nav-link">Forum</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="theme-toggle-btn" class="btn-icon" onclick="app.toggleTheme()" style="font-size: 0.8rem; font-weight: 700;">Theme</button>
+        <div id="nav-user-slot"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-top: 2.5rem;">
+    <!-- Course Catalog Header & Search -->
+    <div class="section-header">
+      <div>
+        <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Technical <span class="gradient-text">Course Catalog</span></h1>
+        <p class="section-subtitle">Comprehensive paths in Web Dev, Python, DSA, SQL, AI, and Placement Aptitude</p>
+      </div>
+
+      <!-- Smart Search Input -->
+      <div style="min-width: 280px;">
+        <input type="text" id="course-search-input" class="form-control" placeholder="Search courses, topics, or instructors..." oninput="courseModule.searchCourses(this.value)">
+      </div>
+    </div>
+
+    <!-- Category Filter Chips -->
+    <div id="category-filter-chips" class="category-filter-bar">
+      <!-- Injected by course.js -->
+    </div>
+
+    <!-- Courses Grid -->
+    <div id="courses-grid-container" class="grid-3" style="margin-bottom: 3.5rem;">
+      <!-- Injected by course.js -->
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-bottom">
+      <span>AI Technical Training Platform • Course Catalog</span>
+      <a href="../index.html" style="color: var(--accent-cyan);">Back to Home</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/course.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      courseModule.initCatalog();
+    });
+  </script>
+</body>
+</html>

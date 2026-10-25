@@ -1,0 +1,594 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "name": "Atul Mehta",
+      "email": "student@demo.com",
+      "password": "password123",
+      "role": "student",
+      "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=Atul",
+      "xp": 420,
+      "streak": 7,
+      "enrolledCourses": ["c1", "c2"],
+      "completedLessons": ["l1-1", "l1-2", "l1-3", "l2-1"],
+      "badges": ["Beginner", "Streak Master", "Quiz Whiz"],
+      "createdAt": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "u2",
+      "name": "Dr. Priya Nair",
+      "email": "trainer@demo.com",
+      "password": "password123",
+      "role": "trainer",
+      "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=Priya",
+      "specialization": "Full Stack & AI Systems",
+      "bio": "Senior Technical Architect and Corporate Trainer with 10+ years experience in Node.js, Cloud and Machine Learning.",
+      "isApproved": true,
+      "coursesCount": 3,
+      "studentsTrained": 1250,
+      "createdAt": "2023-11-20T10:00:00Z"
+    },
+    {
+      "id": "u3",
+      "name": "Vikram Malhotra",
+      "email": "admin@demo.com",
+      "password": "password123",
+      "role": "admin",
+      "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=Admin",
+      "createdAt": "2023-10-01T10:00:00Z"
+    },
+    {
+      "id": "u4",
+      "name": "Ananya Sen",
+      "email": "ananya@student.com",
+      "password": "password123",
+      "role": "student",
+      "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=Ananya",
+      "xp": 890,
+      "streak": 14,
+      "enrolledCourses": ["c1", "c2", "c3"],
+      "completedLessons": ["l1-1", "l1-2", "l1-3", "l1-4", "l1-5"],
+      "badges": ["Beginner", "Intermediate", "Advanced", "Top Coder"],
+      "createdAt": "2024-01-05T10:00:00Z"
+    },
+    {
+      "id": "u5",
+      "name": "Karthik Verma",
+      "email": "karthik@student.com",
+      "password": "password123",
+      "role": "student",
+      "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=Karthik",
+      "xp": 720,
+      "streak": 11,
+      "enrolledCourses": ["c2", "c3"],
+      "completedLessons": ["l2-1", "l2-2"],
+      "badges": ["Beginner", "Intermediate"],
+      "createdAt": "2024-01-10T10:00:00Z"
+    }
+  ],
+  "categories": [
+    "Web Development",
+    "Java",
+    "Python",
+    "C++",
+    "Data Structures",
+    "SQL",
+    "AI",
+    "Cloud",
+    "Aptitude"
+  ],
+  "courses": [
+    {
+      "id": "c1",
+      "title": "Full Stack Web Development with Node.js & React",
+      "category": "Web Development",
+      "trainerId": "u2",
+      "trainerName": "Dr. Priya Nair",
+      "description": "Master modern full-stack web development from fundamentals to building robust REST APIs, state management, and modern responsive UI.",
+      "level": "Intermediate",
+      "rating": 4.9,
+      "enrollments": 1420,
+      "duration": "18 Hours",
+      "thumbnail": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&auto=format&fit=crop&q=60",
+      "lessonsCount": 5,
+      "lessons": [
+        {
+          "id": "l1-1",
+          "title": "1. Modern JavaScript: ES6+, Promises & Async/Await",
+          "duration": "24 mins",
+          "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "ES6_CheatSheet_Notes.pdf",
+          "summary": "Deep dive into lexical scoping, arrow functions, promises chaining, error handling, and event loop architecture.",
+          "codePractice": {
+            "title": "Async Promise Resolver",
+            "instructions": "Write an asynchronous function that fetches user data after a 1-second delay and returns 'User Profile Loaded'.",
+            "starterCode": "async function fetchUserData() {\n  // Implement your solution using Promise or await\n  return new Promise((resolve) => {\n    setTimeout(() => {\n      resolve('User Profile Loaded');\n    }, 1000);\n  });\n}\n\n// Run test\nfetchUserData().then(console.log);",
+            "solution": "async function fetchUserData() {\n  return new Promise((resolve) => setTimeout(() => resolve('User Profile Loaded'), 1000));\n}"
+          }
+        },
+        {
+          "id": "l1-2",
+          "title": "2. Node.js Architecture, Event Loop & Express Setup",
+          "duration": "32 mins",
+          "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "Node_Express_Architecture.pdf",
+          "summary": "Understand single-threaded asynchronous I/O, middleware pipelines, routing, and building modular REST controllers.",
+          "codePractice": {
+            "title": "Express Route Handler",
+            "instructions": "Define a route handler that accepts a request query param 'role' and sends a JSON response.",
+            "starterCode": "function handleRoute(req, res) {\n  const role = req.query.role || 'guest';\n  return { status: 200, message: `Access granted for ${role}` };\n}\n\nconsole.log(handleRoute({ query: { role: 'student' } }));",
+            "solution": "function handleRoute(req, res) {\n  return { status: 200, message: `Access granted for ${req.query.role || 'guest'}` };\n}"
+          }
+        },
+        {
+          "id": "l1-3",
+          "title": "3. REST API Design, JWT Authentication & Security",
+          "duration": "28 mins",
+          "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "JWT_Auth_Security_Best_Practices.pdf",
+          "summary": "Learn role-based authorization headers, token signing, secret verification, and bcrypt password hashing.",
+          "codePractice": {
+            "title": "Auth Header Parser",
+            "instructions": "Extract bearer token string from an Authorization header formatted as 'Bearer <token>'.",
+            "starterCode": "function parseToken(authHeader) {\n  // Return only the token substring\n  if (!authHeader) return null;\n  return authHeader.split(' ')[1];\n}\n\nconsole.log(parseToken('Bearer eyJhbGciOiJIUzI1NiIsIn...'));",
+            "solution": "function parseToken(authHeader) { return authHeader ? authHeader.split(' ')[1] : null; }"
+          }
+        },
+        {
+          "id": "l1-4",
+          "title": "4. Database Integration & MongoDB Schema Modeling",
+          "duration": "30 mins",
+          "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "Database_Schema_Design.pdf",
+          "summary": "Designing relational and document schemas, indexing for performance, population and query optimizations.",
+          "codePractice": {
+            "title": "Filter Active Users",
+            "instructions": "Given an array of user objects, filter users who are active and have more than 100 XP.",
+            "starterCode": "function filterTopUsers(users) {\n  return users.filter(u => u.isActive && u.xp >= 100);\n}\n\nconst sample = [{ name: 'A', isActive: true, xp: 120 }, { name: 'B', isActive: false, xp: 200 }];\nconsole.log(filterTopUsers(sample));",
+            "solution": "function filterTopUsers(users) { return users.filter(u => u.isActive && u.xp >= 100); }"
+          }
+        },
+        {
+          "id": "l1-5",
+          "title": "5. Frontend Integration with Dynamic UI & Responsive CSS",
+          "duration": "35 mins",
+          "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "Frontend_UI_Component_Patterns.pdf",
+          "summary": "Asynchronous fetch API, state management, modal interactions, and dark mode toggles with CSS variables.",
+          "codePractice": {
+            "title": "Dynamic DOM Element Generator",
+            "instructions": "Create a reusable function to build a course card badge string.",
+            "starterCode": "function buildBadge(label, color = 'blue') {\n  return `<span class=\"badge bg-${color}\">${label}</span>`;\n}\n\nconsole.log(buildBadge('Web Dev', 'purple'));",
+            "solution": "function buildBadge(label, color = 'blue') { return `<span class=\"badge bg-${color}\">${label}</span>`; }"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "title": "Python for AI & Machine Learning Foundations",
+      "category": "AI",
+      "trainerId": "u2",
+      "trainerName": "Dr. Priya Nair",
+      "description": "Learn Python programming, NumPy, Pandas, Scikit-Learn, and how to build supervised machine learning models.",
+      "level": "Beginner to Intermediate",
+      "rating": 4.8,
+      "enrollments": 1890,
+      "duration": "14 Hours",
+      "thumbnail": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=60",
+      "lessonsCount": 4,
+      "lessons": [
+        {
+          "id": "l2-1",
+          "title": "1. Pythonic Syntax, List Comprehensions & Lambdas",
+          "duration": "20 mins",
+          "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "Python_Core_CheatSheet.pdf",
+          "summary": "Master generators, iterators, functional programming paradigms, and clean syntax in Python.",
+          "codePractice": {
+            "title": "List Comprehension Square Filter",
+            "instructions": "Square all even numbers from an input list.",
+            "starterCode": "# Python Simulation\ndef square_evens(nums):\n    return [x**2 for x in nums if x % 2 == 0]\n\nprint(square_evens([1, 2, 3, 4, 5, 6]))",
+            "solution": "def square_evens(nums):\n    return [x**2 for x in nums if x % 2 == 0]"
+          }
+        },
+        {
+          "id": "l2-2",
+          "title": "2. Data Manipulation with NumPy & Pandas",
+          "duration": "28 mins",
+          "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "NumPy_Pandas_Summary.pdf",
+          "summary": "Matrix operations, DataFrame indexing, filtering, missing values cleaning, and grouping aggregations.",
+          "codePractice": {
+            "title": "Matrix Transposition Concept",
+            "instructions": "Transpose a 2D matrix array.",
+            "starterCode": "function transposeMatrix(matrix) {\n  return matrix[0].map((_, colIndex) => matrix.map(row => row[colIndex]));\n}\n\nconsole.log(transposeMatrix([[1, 2], [3, 4]]));",
+            "solution": "function transposeMatrix(matrix) { return matrix[0].map((_, c) => matrix.map(r => r[c])); }"
+          }
+        },
+        {
+          "id": "l2-3",
+          "title": "3. Supervised Learning: Regression & Classification",
+          "duration": "35 mins",
+          "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "ML_Algorithms_Overview.pdf",
+          "summary": "Train-test splitting, feature normalization, evaluation metrics (Accuracy, Precision, Recall, F1 score).",
+          "codePractice": {
+            "title": "Accuracy Metric Calculation",
+            "instructions": "Compute accuracy percentage given total correct vs total predictions.",
+            "starterCode": "function calcAccuracy(correct, total) {\n  return ((correct / total) * 100).toFixed(2) + '%';\n}\n\nconsole.log(calcAccuracy(85, 100));",
+            "solution": "function calcAccuracy(correct, total) { return ((correct / total) * 100).toFixed(2) + '%'; }"
+          }
+        },
+        {
+          "id": "l2-4",
+          "title": "4. Building & Deploying an AI Inference Model",
+          "duration": "40 mins",
+          "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "AI_Model_Deployment.pdf",
+          "summary": "Exporting trained models, packaging API endpoints with Flask/FastAPI, and handling real-time inference.",
+          "codePractice": {
+            "title": "Model Prediction Output Formatter",
+            "instructions": "Format classification confidence score into human readable string.",
+            "starterCode": "function formatPrediction(label, confidence) {\n  return `Class: ${label} (Confidence: ${(confidence * 100).toFixed(1)}%)`;\n}\n\nconsole.log(formatPrediction('Spam', 0.943));",
+            "solution": "function formatPrediction(label, conf) { return `Class: ${label} (Confidence: ${(conf*100).toFixed(1)}%)`; }"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "title": "Data Structures & Algorithms in Java for Interviews",
+      "category": "Data Structures",
+      "trainerId": "u2",
+      "trainerName": "Dr. Priya Nair",
+      "description": "Crack technical placement rounds with in-depth coverage of Arrays, Linked Lists, Trees, Graphs, DP, and Big-O notation.",
+      "level": "Intermediate to Advanced",
+      "rating": 4.9,
+      "enrollments": 2340,
+      "duration": "22 Hours",
+      "thumbnail": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=60",
+      "lessonsCount": 3,
+      "lessons": [
+        {
+          "id": "l3-1",
+          "title": "1. Big-O Complexity Analysis & Two-Pointer Technique",
+          "duration": "25 mins",
+          "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "Big_O_CheatSheet.pdf",
+          "summary": "Master time and space complexity evaluations, identifying bottlenecks, and optimizing nested loops.",
+          "codePractice": {
+            "title": "Two-Sum with Sorted Array",
+            "instructions": "Given a sorted array and target sum, return indices of the two numbers.",
+            "starterCode": "function twoSumSorted(arr, target) {\n  let left = 0, right = arr.length - 1;\n  while (left < right) {\n    let sum = arr[left] + arr[right];\n    if (sum === target) return [left, right];\n    if (sum < target) left++;\n    else right--;\n  }\n  return null;\n}\n\nconsole.log(twoSumSorted([2, 7, 11, 15], 9));",
+            "solution": "function twoSumSorted(arr, target) { let l=0, r=arr.length-1; while(l<r){ let s=arr[l]+arr[r]; if(s===target)return[l,r]; if(s<target)l++; else r--; } return null; }"
+          }
+        },
+        {
+          "id": "l3-2",
+          "title": "2. Binary Search Trees & Tree Traversals (Inorder, Preorder, Postorder)",
+          "duration": "30 mins",
+          "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "Trees_Traversals_Notes.pdf",
+          "summary": "Recursive traversal patterns, Depth-First Search (DFS), Breadth-First Search (BFS), and BST validation.",
+          "codePractice": {
+            "title": "Inorder Traversal Simulation",
+            "instructions": "Simulate inorder traversal order for a simple tree object.",
+            "starterCode": "function inorder(root, res = []) {\n  if (!root) return res;\n  inorder(root.left, res);\n  res.push(root.val);\n  inorder(root.right, res);\n  return res;\n}\n\nconst tree = { val: 2, left: { val: 1, left: null, right: null }, right: { val: 3, left: null, right: null } };\nconsole.log(inorder(tree));",
+            "solution": "function inorder(root, res = []) { if (!root) return res; inorder(root.left, res); res.push(root.val); inorder(root.right, res); return res; }"
+          }
+        },
+        {
+          "id": "l3-3",
+          "title": "3. Dynamic Programming: 0/1 Knapsack & Memoization",
+          "duration": "38 mins",
+          "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "Dynamic_Programming_Handbook.pdf",
+          "summary": "Transition equations, top-down memoization vs bottom-up tabulation, and space optimization tricks.",
+          "codePractice": {
+            "title": "Fibonacci with Memoization",
+            "instructions": "Calculate the N-th Fibonacci number in O(N) time using memoization.",
+            "starterCode": "function fibMemo(n, memo = {}) {\n  if (n <= 1) return n;\n  if (memo[n]) return memo[n];\n  memo[n] = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);\n  return memo[n];\n}\n\nconsole.log(fibMemo(10)); // 55",
+            "solution": "function fibMemo(n, memo = {}) { if (n <= 1) return n; if (memo[n]) return memo[n]; return memo[n] = fibMemo(n - 1, memo) + fibMemo(n - 2, memo); }"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "title": "SQL & Relational Database Mastery",
+      "category": "SQL",
+      "trainerId": "u2",
+      "trainerName": "Dr. Priya Nair",
+      "description": "Learn complex JOINs, indexing, normalization (1NF-BCNF), window functions, and database query optimization.",
+      "level": "Beginner to Intermediate",
+      "rating": 4.7,
+      "enrollments": 1100,
+      "duration": "10 Hours",
+      "thumbnail": "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&auto=format&fit=crop&q=60",
+      "lessonsCount": 2,
+      "lessons": [
+        {
+          "id": "l4-1",
+          "title": "1. SQL Joins, Subqueries & Aggregations",
+          "duration": "22 mins",
+          "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "SQL_Joins_CheatSheet.pdf",
+          "summary": "INNER JOIN, LEFT JOIN, FULL JOIN, GROUP BY, HAVING, and correlated subqueries.",
+          "codePractice": {
+            "title": "SQL Query Builder Helper",
+            "instructions": "Build a simple SELECT query string with table name and columns.",
+            "starterCode": "function buildSelectQuery(table, cols = ['*']) {\n  return `SELECT ${cols.join(', ')} FROM ${table};`;\n}\n\nconsole.log(buildSelectQuery('students', ['id', 'name', 'gpa']));",
+            "solution": "function buildSelectQuery(table, cols = ['*']) { return `SELECT ${cols.join(', ')} FROM ${table};`; }"
+          }
+        },
+        {
+          "id": "l4-2",
+          "title": "2. Normalization & Indexing Performance",
+          "duration": "25 mins",
+          "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "DB_Normalization_Guide.pdf",
+          "summary": "Preventing anomalies with 1NF, 2NF, 3NF, B-Trees, clustered indexes, and query execution plans.",
+          "codePractice": {
+            "title": "Primary Key Check Helper",
+            "instructions": "Verify that all items in an array of records have unique primary keys.",
+            "starterCode": "function hasUniqueKeys(records, keyName = 'id') {\n  const seen = new Set();\n  for (const r of records) {\n    if (seen.has(r[keyName])) return false;\n    seen.add(r[keyName]);\n  }\n  return true;\n}\n\nconsole.log(hasUniqueKeys([{ id: 1 }, { id: 2 }, { id: 1 }]));",
+            "solution": "function hasUniqueKeys(records, keyName = 'id') { const seen = new Set(); for (const r of records) { if (seen.has(r[keyName])) return false; seen.add(r[keyName]); } return true; }"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "title": "Aptitude & Placement Preparation for MCA/B.Tech",
+      "category": "Aptitude",
+      "trainerId": "u2",
+      "trainerName": "Dr. Priya Nair",
+      "description": "Fast shortcut formulas for Quantitative aptitude, Speed Math, Logical Reasoning, and Data Interpretation.",
+      "level": "All Levels",
+      "rating": 4.9,
+      "enrollments": 1750,
+      "duration": "12 Hours",
+      "thumbnail": "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&auto=format&fit=crop&q=60",
+      "lessonsCount": 2,
+      "lessons": [
+        {
+          "id": "l5-1",
+          "title": "1. Speed Math, Percentages & Profit-Loss Shortcuts",
+          "duration": "18 mins",
+          "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "Aptitude_Shortcuts_Formulae.pdf",
+          "summary": "Speed mental math techniques, fraction to percent conversions, and successive discount problems.",
+          "codePractice": {
+            "title": "Percentage Change Formula",
+            "instructions": "Compute percentage increase or decrease between initial and final values.",
+            "starterCode": "function percentChange(oldVal, newVal) {\n  const diff = newVal - oldVal;\n  return ((diff / oldVal) * 100).toFixed(1) + '%';\n}\n\nconsole.log(percentChange(50, 75)); // +50.0%",
+            "solution": "function percentChange(oldVal, newVal) { return (((newVal - oldVal) / oldVal) * 100).toFixed(1) + '%'; }"
+          }
+        },
+        {
+          "id": "l5-2",
+          "title": "2. Time, Speed, Distance & Work-Rate Problems",
+          "duration": "24 mins",
+          "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+          "pdfUrl": "#",
+          "pdfTitle": "Work_Time_Formulas.pdf",
+          "summary": "Relative speed in train problems, boats and streams, and joint work-rate calculations.",
+          "codePractice": {
+            "title": "Combined Work Rate Calculator",
+            "instructions": "If person A takes X days and person B takes Y days, calculate days needed together.",
+            "starterCode": "function jointWorkDays(daysA, daysB) {\n  return ((daysA * daysB) / (daysA + daysB)).toFixed(2);\n}\n\nconsole.log(jointWorkDays(10, 15)); // 6.00 days",
+            "solution": "function jointWorkDays(daysA, daysB) { return ((daysA * daysB) / (daysA + daysB)).toFixed(2); }"
+          }
+        }
+      ]
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "q1",
+      "courseId": "c1",
+      "title": "Full Stack & JavaScript Architecture Assessment",
+      "durationMinutes": 10,
+      "passingScore": 70,
+      "negativeMarking": false,
+      "questions": [
+        {
+          "id": "q1-1",
+          "question": "What will be the output of `console.log(typeof NaN)` in JavaScript?",
+          "options": ["'undefined'", "'number'", "'object'", "'NaN'"],
+          "correctIndex": 1,
+          "explanation": "In JavaScript, NaN is a numeric value representing 'Not-a-Number', so `typeof NaN` returns 'number'."
+        },
+        {
+          "id": "q1-2",
+          "question": "Which HTTP method is idempotent and used to replace an entire resource in REST?",
+          "options": ["POST", "PATCH", "PUT", "DELETE"],
+          "correctIndex": 2,
+          "explanation": "PUT is idempotent and replaces the target resource entirely. PATCH makes partial updates."
+        },
+        {
+          "id": "q1-3",
+          "question": "What is the purpose of the `next()` function in Express.js middleware?",
+          "options": [
+            "Terminate the HTTP request immediately",
+            "Pass control to the next middleware function in stack",
+            "Restart the server process",
+            "Send an HTTP 200 OK response"
+          ],
+          "correctIndex": 1,
+          "explanation": "The `next()` callback tells Express to proceed to the next matching middleware in the application pipeline."
+        },
+        {
+          "id": "q1-4",
+          "question": "Which part of a JWT (JSON Web Token) contains the user payload and role information?",
+          "options": ["Header", "Payload", "Signature", "Footer"],
+          "correctIndex": 1,
+          "explanation": "The payload (second part of JWT) contains claims such as user ID, role, and expiration timestamp."
+        },
+        {
+          "id": "q1-5",
+          "question": "In the Node.js event loop, which phase handles expired `setTimeout` callbacks?",
+          "options": ["Poll phase", "Check phase", "Timers phase", "Close callbacks phase"],
+          "correctIndex": 2,
+          "explanation": "The Timers phase executes callbacks scheduled by `setTimeout()` and `setInterval()`."
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "courseId": "c2",
+      "title": "Python & Machine Learning Foundations Quiz",
+      "durationMinutes": 8,
+      "passingScore": 70,
+      "negativeMarking": false,
+      "questions": [
+        {
+          "id": "q2-1",
+          "question": "Which Python data type is immutable?",
+          "options": ["List", "Dictionary", "Tuple", "Set"],
+          "correctIndex": 2,
+          "explanation": "Tuples are immutable sequences in Python; their elements cannot be modified once created."
+        },
+        {
+          "id": "q2-2",
+          "question": "In Supervised Learning, what does Overfitting typically indicate?",
+          "options": [
+            "High training error and high test error",
+            "Low training error and high test error",
+            "Low training error and low test error",
+            "Model is too simple to capture patterns"
+          ],
+          "correctIndex": 1,
+          "explanation": "Overfitting happens when a model learns noise from training data (low train error) and fails to generalize (high test error)."
+        },
+        {
+          "id": "q2-3",
+          "question": "What library in Python is primarily used for multi-dimensional array computing?",
+          "options": ["Matplotlib", "NumPy", "Flask", "BeautifulSoup"],
+          "correctIndex": 1,
+          "explanation": "NumPy provides high-performance N-dimensional array objects and mathematical operations."
+        }
+      ]
+    }
+  ],
+  "codingChallenges": [
+    {
+      "id": "ch1",
+      "title": "Valid Palindrome String",
+      "difficulty": "Easy",
+      "xp": 30,
+      "description": "Given a string `s`, return true if it is a palindrome, ignoring non-alphanumeric characters and case.",
+      "starterCode": "function isPalindrome(s) {\n  const clean = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  return clean === clean.split('').reverse().join('');\n}\n\nconsole.log(isPalindrome(\"A man, a plan, a canal: Panama\")); // true",
+      "testCases": [
+        { "input": "\"A man, a plan, a canal: Panama\"", "expected": "true" },
+        { "input": "\"race a car\"", "expected": "false" }
+      ]
+    },
+    {
+      "id": "ch2",
+      "title": "Maximum Subarray (Kadane's Algorithm)",
+      "difficulty": "Medium",
+      "xp": 50,
+      "description": "Given an integer array `nums`, find the subarray with the largest sum and return its sum.",
+      "starterCode": "function maxSubArray(nums) {\n  let maxSoFar = nums[0];\n  let currMax = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    currMax = Math.max(nums[i], currMax + nums[i]);\n    maxSoFar = Math.max(maxSoFar, currMax);\n  }\n  return maxSoFar;\n}\n\nconsole.log(maxSubArray([-2,1,-3,4,-1,2,1,-5,4])); // 6",
+      "testCases": [
+        { "input": "[-2,1,-3,4,-1,2,1,-5,4]", "expected": "6" },
+        { "input": "[1]", "expected": "1" }
+      ]
+    },
+    {
+      "id": "ch3",
+      "title": "Longest Substring Without Repeating Characters",
+      "difficulty": "Hard",
+      "xp": 80,
+      "description": "Given a string `s`, find the length of the longest substring without duplicate characters.",
+      "starterCode": "function lengthOfLongestSubstring(s) {\n  let set = new Set();\n  let left = 0, maxLen = 0;\n  for (let right = 0; right < s.length; right++) {\n    while (set.has(s[right])) {\n      set.delete(s[left]);\n      left++;\n    }\n    set.add(s[right]);\n    maxLen = Math.max(maxLen, right - left + 1);\n  }\n  return maxLen;\n}\n\nconsole.log(lengthOfLongestSubstring(\"abcabcbb\")); // 3",
+      "testCases": [
+        { "input": "\"abcabcbb\"", "expected": "3" },
+        { "input": "\"bbbbb\"", "expected": "1" }
+      ]
+    }
+  ],
+  "leaderboard": [
+    { "rank": 1, "name": "Ananya Sen", "xp": 890, "streak": 14, "badgesCount": 4, "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=Ananya" },
+    { "rank": 2, "name": "Karthik Verma", "xp": 720, "streak": 11, "badgesCount": 3, "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=Karthik" },
+    { "rank": 3, "name": "Atul Mehta (You)", "xp": 420, "streak": 7, "badgesCount": 3, "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=Atul" },
+    { "rank": 4, "name": "Sneha Patel", "xp": 390, "streak": 5, "badgesCount": 2, "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=Sneha" },
+    { "rank": 5, "name": "Rohan Gupta", "xp": 310, "streak": 4, "badgesCount": 2, "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=Rohan" }
+  ],
+  "forum": [
+    {
+      "id": "f1",
+      "title": "How does the Node.js event loop handle asynchronous file I/O versus network requests?",
+      "category": "Web Development",
+      "author": "Atul Mehta",
+      "authorRole": "Student",
+      "date": "2 hours ago",
+      "upvotes": 12,
+      "replies": [
+        {
+          "id": "r1",
+          "author": "Dr. Priya Nair",
+          "authorRole": "Trainer",
+          "isTrainerVerified": true,
+          "content": "Great question! Network I/O is delegated directly to OS asynchronous system calls (like epoll on Linux, kqueue on macOS, IOCP on Windows). In contrast, standard file system I/O does not have unified async OS interfaces across platforms, so Node.js offloads file system operations to the libuv threadpool (default 4 threads).",
+          "upvotes": 19
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "title": "What is the difference between Array and LinkedList memory allocation in Java?",
+      "category": "Data Structures",
+      "author": "Karthik Verma",
+      "authorRole": "Student",
+      "date": "1 day ago",
+      "upvotes": 8,
+      "replies": [
+        {
+          "id": "r2",
+          "author": "Dr. Priya Nair",
+          "authorRole": "Trainer",
+          "isTrainerVerified": true,
+          "content": "Arrays allocate contiguous blocks of memory, which provides O(1) random access and excellent CPU cache locality. LinkedList allocates non-contiguous nodes on the heap with pointers (references), which incurs extra memory overhead per node and O(N) access time.",
+          "upvotes": 14
+        }
+      ]
+    }
+  ],
+  "notifications": [
+    { "id": "n1", "title": "New Lesson Added", "message": "Dr. Priya Nair uploaded Lesson 5 on Dynamic UI Architecture.", "time": "10 mins ago", "read": false },
+    { "id": "n2", "title": "Daily Streak Maintained!", "message": "You completed your 7th consecutive day! Earned +10 XP Bonus.", "time": "2 hours ago", "read": false },
+    { "id": "n3", "title": "Quiz Assessment Ready", "message": "Course 'Web Development' quiz is now available. Score 70%+ for certificate.", "time": "1 day ago", "read": true },
+    { "id": "n4", "title": "Welcome to AI Technical Training Platform", "message": "Explore 5 AI assistants: Tutor, Code Explainer, Quiz Gen, Mock Interview, and Resume Review.", "time": "3 days ago", "read": true }
+  ],
+  "certificates": [
+    {
+      "id": "CERT-2024-8841",
+      "userId": "u1",
+      "studentName": "Atul Mehta",
+      "courseId": "c1",
+      "courseTitle": "Full Stack Web Development with Node.js & React",
+      "issueDate": "2024-02-18",
+      "score": 92,
+      "verificationUrl": "#verify-CERT-2024-8841",
+      "instructor": "Dr. Priya Nair"
+    }
+  ]
+}

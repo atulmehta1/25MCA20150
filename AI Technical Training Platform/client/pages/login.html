@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In & Register | AI Technical Training Platform</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="../index.html" class="logo-brand">
+        <div class="brand-icon">AI</div>
+        <span>AI Tech<span class="gradient-text">Train</span></span>
+      </a>
+
+      <div class="nav-actions">
+        <button id="theme-toggle-btn" class="btn-icon" onclick="app.toggleTheme()" style="font-size: 0.8rem; font-weight: 700;">Theme</button>
+        <a href="../index.html" class="btn btn-secondary btn-sm">Home</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="display: flex; align-items: center; justify-content: center; flex: 1; padding: 2.5rem 1rem;">
+    <div class="card" style="width: 100%; max-width: 480px; background: var(--bg-secondary); border-color: var(--border-glow); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+      
+      <!-- Tab Header: Sign In vs Register -->
+      <div style="display: flex; gap: 0.5rem; background: var(--bg-card); padding: 0.35rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+        <button id="tab-login-btn" class="btn btn-sm" style="flex: 1; background: var(--accent-gradient); color: #0f172a; font-weight: 700;" onclick="switchAuthTab('login')">
+          Sign In
+        </button>
+        <button id="tab-register-btn" class="btn btn-sm" style="flex: 1; background: transparent; color: var(--text-secondary);" onclick="switchAuthTab('register')">
+          Register New User
+        </button>
+      </div>
+
+      <!-- Quick 1-Click Demo Logins for Examiner / Viva -->
+      <div style="background: rgba(56, 189, 248, 0.08); border: 1px solid var(--border-glow); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem;">
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 0.5rem;">
+          1-Click Demo Accounts (For Viva & Presentation):
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.4rem;">
+          <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.35rem;" onclick="quickLogin('student@demo.com', 'password123', 'student')">
+            Student
+          </button>
+          <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.35rem;" onclick="quickLogin('trainer@demo.com', 'password123', 'trainer')">
+            Trainer
+          </button>
+          <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.35rem;" onclick="quickLogin('admin@demo.com', 'password123', 'admin')">
+            Admin
+          </button>
+        </div>
+      </div>
+
+      <!-- Sign In Form -->
+      <form id="login-form" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="login-email" class="form-control" placeholder="student@demo.com" required value="student@demo.com">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required value="password123">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+          Sign In to Platform
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" style="display: none;" onsubmit="handleRegisterSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="reg-name" class="form-control" placeholder="e.g. Ankit Sharma" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="reg-email" class="form-control" placeholder="name@college.edu" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Account Role</label>
+          <select id="reg-role" class="form-control">
+            <option value="student">Student / Learner</option>
+            <option value="trainer">Trainer / Instructor (Requires Admin Approval)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="reg-password" class="form-control" placeholder="Create strong password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+          Create My Account
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <footer style="margin-top: auto;">
+    <div class="container footer-bottom">
+      <span>AI Technical Training Platform • Secure Authentication</span>
+      <a href="../index.html" style="color: var(--accent-cyan);">Back to Home</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+
+  <script>
+    function switchAuthTab(tab) {
+      const loginForm = document.getElementById('login-form');
+      const regForm = document.getElementById('register-form');
+      const loginBtn = document.getElementById('tab-login-btn');
+      const regBtn = document.getElementById('tab-register-btn');
+
+      if (tab === 'login') {
+        loginForm.style.display = 'block';
+        regForm.style.display = 'none';
+        loginBtn.style.background = 'var(--accent-gradient)';
+        loginBtn.style.color = '#0f172a';
+        regBtn.style.background = 'transparent';
+        regBtn.style.color = 'var(--text-secondary)';
+      } else {
+        loginForm.style.display = 'none';
+        regForm.style.display = 'block';
+        regBtn.style.background = 'var(--accent-gradient)';
+        regBtn.style.color = '#0f172a';
+        loginBtn.style.background = 'transparent';
+        loginBtn.style.color = 'var(--text-secondary)';
+      }
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-password').value;
+
+      try {
+        await auth.login(email, pass);
+        app.showToast('Login successful! Redirecting to Dashboard...', 'success');
+        setTimeout(() => window.location.href = 'dashboard.html', 400);
+      } catch (err) {
+        app.showToast(err.message || 'Login failed. Check credentials.', 'error');
+      }
+    }
+
+    async function handleRegisterSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const pass = document.getElementById('reg-password').value;
+      const role = document.getElementById('reg-role').value;
+
+      try {
+        await auth.register(name, email, pass, role);
+        app.showToast('Registration complete! Welcome to AI TechTrain', 'success');
+        setTimeout(() => window.location.href = 'dashboard.html', 500);
+      } catch (err) {
+        app.showToast(err.message || 'Registration failed.', 'error');
+      }
+    }
+
+    function quickLogin(email, pass, role) {
+      auth.switchRole(role);
+      setTimeout(() => window.location.href = 'dashboard.html', 300);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('tab') === 'register') {
+        switchAuthTab('register');
+      }
+    });
+  </script>
+</body>
+</html>

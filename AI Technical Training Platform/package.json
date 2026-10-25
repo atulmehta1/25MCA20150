@@ -1,0 +1,24 @@
+{
+  "name": "ai-technical-training-platform",
+  "version": "1.0.0",
+  "description": "AI Technical Training Platform - MCA Mini Project with Student, Trainer, Admin roles and 5 AI Assistants",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node server/server.js"
+  },
+  "keywords": [
+    "mca-project",
+    "ai-training-platform",
+    "e-learning",
+    "ai-tutor",
+    "quiz-generator",
+    "code-explainer"
+  ],
+  "author": "MCA Student Project",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
