@@ -1,0 +1,121 @@
+Match_ID,Season,Team,Opponent,Venue,Team_Runs,Wickets_Lost,Overs_Faced,Match_Result,Win_Margin_Runs,Win_Margin_Wickets,Toss_Decision,Player_of_Match
+M001,2024,Delhi Capitals,Rajasthan Royals,Eden Gardens,178,6,20.0,Win,50,0,Bowl,R. Kumar
+M002,2020,Royal Challengers Bengaluru,Punjab Kings,Rajiv Gandhi Intl. Stadium,125,8,20.0,Loss,0,0,Bowl,N. Das
+M003,2021,Gujarat Titans,Chennai Super Kings,M. A. Chidambaram Stadium,187,5,20.0,Win,46,0,Bat,K. Yadav
+M004,2024,Mumbai Indians,Kolkata Knight Riders,Eden Gardens,200,8,20.0,Win,33,0,Bowl,S. Patel
+M005,2025,Delhi Capitals,Lucknow Super Giants,Eden Gardens,197,2,20.0,Loss,0,0,Bowl,A. Sharma
+M006,2025,Sunrisers Hyderabad,Chennai Super Kings,Arun Jaitley Stadium,219,7,20.0,Win,26,4,Bat,K. Yadav
+M007,2020,Rajasthan Royals,Mumbai Indians,Eden Gardens,169,5,20.0,Win,17,0,Bowl,K. Yadav
+M008,2021,Sunrisers Hyderabad,Mumbai Indians,Narendra Modi Stadium,162,6,20.0,Loss,0,0,Bat,A. Sharma
+M009,2022,Chennai Super Kings,Gujarat Titans,Rajiv Gandhi Intl. Stadium,175,6,20.0,Loss,0,0,Bat,M. Singh
+M010,2022,Rajasthan Royals,Mumbai Indians,Rajiv Gandhi Intl. Stadium,161,9,20.0,Win,40,0,Bat,N. Das
+M011,2023,Lucknow Super Giants,Delhi Capitals,M. A. Chidambaram Stadium,226,5,20.0,Loss,0,0,Bat,R. Kumar
+M012,2021,Chennai Super Kings,Lucknow Super Giants,Eden Gardens,200,7,20.0,Loss,0,0,Bat,S. Patel
+M013,2023,Mumbai Indians,Sunrisers Hyderabad,Eden Gardens,126,8,20.0,Loss,0,0,Bat,R. Kumar
+M014,2024,Royal Challengers Bengaluru,Rajasthan Royals,Narendra Modi Stadium,168,6,20.0,Win,52,8,Bowl,P. Mehta
+M015,2021,Gujarat Titans,Delhi Capitals,Narendra Modi Stadium,185,9,20.0,Win,30,0,Bat,P. Mehta
+M016,2022,Royal Challengers Bengaluru,Delhi Capitals,Narendra Modi Stadium,127,2,20.0,Loss,0,0,Bat,K. Yadav
+M017,2024,Kolkata Knight Riders,Lucknow Super Giants,M. A. Chidambaram Stadium,204,7,20.0,Loss,0,0,Bat,M. Singh
+M018,2022,Delhi Capitals,Sunrisers Hyderabad,Arun Jaitley Stadium,160,3,20.0,Win,34,3,Bowl,P. Mehta
+M019,2023,Gujarat Titans,Kolkata Knight Riders,Narendra Modi Stadium,144,10,18.5,Win,19,1,Bowl,K. Yadav
+M020,2022,Royal Challengers Bengaluru,Chennai Super Kings,Eden Gardens,165,3,20.0,Win,2,5,Bat,R. Kumar
+M021,2020,Punjab Kings,Lucknow Super Giants,M. A. Chidambaram Stadium,147,2,20.0,Loss,0,0,Bat,N. Das
+M022,2020,Gujarat Titans,Chennai Super Kings,M. A. Chidambaram Stadium,197,10,17.9,Loss,0,0,Bowl,N. Das
+M023,2023,Chennai Super Kings,Lucknow Super Giants,Eden Gardens,184,3,20.0,Win,41,0,Bowl,K. Yadav
+M024,2022,Mumbai Indians,Delhi Capitals,M. A. Chidambaram Stadium,160,10,19.5,Loss,0,0,Bowl,P. Mehta
+M025,2020,Rajasthan Royals,Royal Challengers Bengaluru,Wankhede Stadium,151,8,20.0,Loss,0,0,Bat,P. Mehta
+M026,2022,Kolkata Knight Riders,Rajasthan Royals,Narendra Modi Stadium,175,4,20.0,Loss,0,0,Bat,N. Das
+M027,2023,Gujarat Titans,Delhi Capitals,Narendra Modi Stadium,141,4,20.0,Win,11,0,Bowl,P. Mehta
+M028,2022,Delhi Capitals,Mumbai Indians,Narendra Modi Stadium,175,5,20.0,Win,46,4,Bowl,K. Yadav
+M029,2024,Punjab Kings,Lucknow Super Giants,M. A. Chidambaram Stadium,153,6,20.0,Win,32,4,Bowl,A. Sharma
+M030,2025,Mumbai Indians,Delhi Capitals,Arun Jaitley Stadium,180,3,20.0,Loss,0,0,Bat,N. Das
+M031,2021,Kolkata Knight Riders,Mumbai Indians,Eden Gardens,196,3,20.0,Loss,0,0,Bowl,P. Mehta
+M032,2022,Kolkata Knight Riders,Royal Challengers Bengaluru,Rajiv Gandhi Intl. Stadium,168,6,20.0,Loss,0,0,Bowl,K. Yadav
+M033,2024,Gujarat Titans,Kolkata Knight Riders,Arun Jaitley Stadium,174,3,20.0,Loss,0,0,Bat,M. Singh
+M034,2021,Gujarat Titans,Sunrisers Hyderabad,Rajiv Gandhi Intl. Stadium,179,8,20.0,Loss,0,0,Bowl,R. Kumar
+M035,2022,Delhi Capitals,Royal Challengers Bengaluru,Eden Gardens,196,2,20.0,Win,37,0,Bowl,P. Mehta
+M036,2023,Delhi Capitals,Rajasthan Royals,Rajiv Gandhi Intl. Stadium,193,6,20.0,Loss,0,0,Bat,N. Das
+M037,2021,Royal Challengers Bengaluru,Rajasthan Royals,Eden Gardens,186,5,20.0,Win,49,0,Bowl,R. Kumar
+M038,2023,Royal Challengers Bengaluru,Delhi Capitals,Rajiv Gandhi Intl. Stadium,183,10,19.4,Loss,0,0,Bowl,R. Kumar
+M039,2021,Royal Challengers Bengaluru,Punjab Kings,Arun Jaitley Stadium,142,5,20.0,Loss,0,0,Bowl,P. Mehta
+M040,2022,Royal Challengers Bengaluru,Delhi Capitals,Arun Jaitley Stadium,121,5,20.0,Win,32,2,Bowl,P. Mehta
+M041,2020,Kolkata Knight Riders,Gujarat Titans,Wankhede Stadium,143,6,20.0,Loss,0,0,Bat,M. Singh
+M042,2021,Rajasthan Royals,Kolkata Knight Riders,Wankhede Stadium,240,3,20.0,Loss,0,0,Bowl,A. Sharma
+M043,2020,Rajasthan Royals,Sunrisers Hyderabad,Narendra Modi Stadium,175,6,20.0,Loss,0,0,Bowl,A. Sharma
+M044,2025,Chennai Super Kings,Lucknow Super Giants,Eden Gardens,154,10,18.9,Win,46,5,Bowl,P. Mehta
+M045,2021,Gujarat Titans,Mumbai Indians,Wankhede Stadium,185,7,20.0,Loss,0,0,Bowl,P. Mehta
+M046,2022,Punjab Kings,Sunrisers Hyderabad,M. A. Chidambaram Stadium,174,2,20.0,Win,23,0,Bat,N. Das
+M047,2020,Lucknow Super Giants,Gujarat Titans,Wankhede Stadium,187,2,20.0,Loss,0,0,Bat,P. Mehta
+M048,2021,Royal Challengers Bengaluru,Lucknow Super Giants,Arun Jaitley Stadium,189,2,20.0,Loss,0,0,Bat,R. Kumar
+M049,2020,Kolkata Knight Riders,Gujarat Titans,M. A. Chidambaram Stadium,149,6,20.0,Loss,0,0,Bowl,K. Yadav
+M050,2024,Chennai Super Kings,Punjab Kings,Wankhede Stadium,152,8,20.0,Win,41,0,Bowl,K. Yadav
+M051,2025,Punjab Kings,Chennai Super Kings,Arun Jaitley Stadium,199,3,20.0,Loss,0,0,Bowl,R. Kumar
+M052,2025,Lucknow Super Giants,Kolkata Knight Riders,Wankhede Stadium,147,7,20.0,Win,55,4,Bowl,N. Das
+M053,2020,Mumbai Indians,Punjab Kings,Wankhede Stadium,178,9,20.0,Loss,0,0,Bowl,V. Rao
+M054,2024,Royal Challengers Bengaluru,Lucknow Super Giants,Rajiv Gandhi Intl. Stadium,157,8,20.0,Win,50,0,Bowl,M. Singh
+M055,2025,Sunrisers Hyderabad,Gujarat Titans,Eden Gardens,182,5,20.0,Win,54,8,Bat,P. Mehta
+M056,2023,Sunrisers Hyderabad,Punjab Kings,Narendra Modi Stadium,191,2,20.0,Win,8,5,Bat,V. Rao
+M057,2025,Sunrisers Hyderabad,Punjab Kings,Arun Jaitley Stadium,156,2,20.0,Win,2,0,Bowl,K. Yadav
+M058,2025,Kolkata Knight Riders,Delhi Capitals,Narendra Modi Stadium,201,7,20.0,Win,53,8,Bowl,R. Kumar
+M059,2021,Chennai Super Kings,Royal Challengers Bengaluru,Arun Jaitley Stadium,154,10,17.5,Loss,0,0,Bat,A. Sharma
+M060,2021,Delhi Capitals,Punjab Kings,Rajiv Gandhi Intl. Stadium,152,8,20.0,Win,18,3,Bat,P. Mehta
+M061,2022,Kolkata Knight Riders,Gujarat Titans,M. A. Chidambaram Stadium,166,8,20.0,Loss,0,0,Bowl,P. Mehta
+M062,2023,Mumbai Indians,Royal Challengers Bengaluru,Wankhede Stadium,175,5,20.0,Loss,0,0,Bat,V. Rao
+M063,2020,Rajasthan Royals,Lucknow Super Giants,Rajiv Gandhi Intl. Stadium,152,6,20.0,Loss,0,0,Bowl,V. Rao
+M064,2024,Delhi Capitals,Chennai Super Kings,Arun Jaitley Stadium,97,6,20.0,Win,33,2,Bat,K. Yadav
+M065,2020,Chennai Super Kings,Rajasthan Royals,Eden Gardens,152,7,20.0,Win,14,0,Bat,A. Sharma
+M066,2023,Chennai Super Kings,Gujarat Titans,Arun Jaitley Stadium,179,8,20.0,Loss,0,0,Bowl,A. Sharma
+M067,2020,Mumbai Indians,Kolkata Knight Riders,Narendra Modi Stadium,185,4,20.0,Loss,0,0,Bowl,A. Sharma
+M068,2021,Rajasthan Royals,Kolkata Knight Riders,Eden Gardens,174,4,20.0,Loss,0,0,Bowl,P. Mehta
+M069,2021,Lucknow Super Giants,Punjab Kings,Eden Gardens,240,8,20.0,Win,11,0,Bowl,V. Rao
+M070,2023,Gujarat Titans,Rajasthan Royals,Rajiv Gandhi Intl. Stadium,187,2,20.0,Loss,0,0,Bat,K. Yadav
+M071,2020,Chennai Super Kings,Sunrisers Hyderabad,Wankhede Stadium,151,3,20.0,Loss,0,0,Bat,M. Singh
+M072,2020,Sunrisers Hyderabad,Kolkata Knight Riders,Arun Jaitley Stadium,171,9,20.0,Loss,0,0,Bat,P. Mehta
+M073,2023,Royal Challengers Bengaluru,Rajasthan Royals,Arun Jaitley Stadium,181,2,20.0,Win,52,0,Bat,R. Kumar
+M074,2023,Lucknow Super Giants,Royal Challengers Bengaluru,Arun Jaitley Stadium,189,6,20.0,Loss,0,0,Bat,K. Yadav
+M075,2023,Kolkata Knight Riders,Delhi Capitals,Eden Gardens,191,6,20.0,Win,47,0,Bowl,P. Mehta
+M076,2023,Chennai Super Kings,Lucknow Super Giants,M. A. Chidambaram Stadium,185,8,20.0,Loss,0,0,Bat,M. Singh
+M077,2025,Chennai Super Kings,Gujarat Titans,Eden Gardens,158,3,20.0,Loss,0,0,Bowl,K. Yadav
+M078,2025,Rajasthan Royals,Royal Challengers Bengaluru,Wankhede Stadium,210,5,20.0,Win,32,7,Bat,N. Das
+M079,2025,Sunrisers Hyderabad,Royal Challengers Bengaluru,Narendra Modi Stadium,202,6,20.0,Loss,0,0,Bowl,A. Sharma
+M080,2020,Rajasthan Royals,Delhi Capitals,Wankhede Stadium,173,5,20.0,Win,44,6,Bat,K. Yadav
+M081,2020,Royal Challengers Bengaluru,Sunrisers Hyderabad,Narendra Modi Stadium,161,6,20.0,Win,33,7,Bat,V. Rao
+M082,2025,Lucknow Super Giants,Rajasthan Royals,Rajiv Gandhi Intl. Stadium,192,10,18.6,Loss,0,0,Bat,S. Patel
+M083,2022,Chennai Super Kings,Royal Challengers Bengaluru,Arun Jaitley Stadium,173,6,20.0,Win,11,4,Bat,M. Singh
+M084,2022,Gujarat Titans,Rajasthan Royals,Arun Jaitley Stadium,145,2,20.0,Win,28,0,Bowl,S. Patel
+M085,2020,Sunrisers Hyderabad,Gujarat Titans,Arun Jaitley Stadium,195,10,17.1,Loss,0,0,Bowl,M. Singh
+M086,2024,Chennai Super Kings,Kolkata Knight Riders,Wankhede Stadium,168,6,20.0,Loss,0,0,Bat,S. Patel
+M087,2025,Lucknow Super Giants,Royal Challengers Bengaluru,Arun Jaitley Stadium,227,3,20.0,Loss,0,0,Bat,M. Singh
+M088,2022,Kolkata Knight Riders,Delhi Capitals,Narendra Modi Stadium,87,4,20.0,Loss,0,0,Bat,R. Kumar
+M089,2025,Punjab Kings,Rajasthan Royals,Rajiv Gandhi Intl. Stadium,202,10,18.3,Loss,0,0,Bowl,M. Singh
+M090,2024,Royal Challengers Bengaluru,Rajasthan Royals,Eden Gardens,157,6,20.0,Loss,0,0,Bowl,S. Patel
+M091,2021,Lucknow Super Giants,Delhi Capitals,Rajiv Gandhi Intl. Stadium,147,10,18.1,Loss,0,0,Bat,M. Singh
+M092,2022,Gujarat Titans,Sunrisers Hyderabad,Rajiv Gandhi Intl. Stadium,183,6,20.0,Loss,0,0,Bowl,N. Das
+M093,2024,Delhi Capitals,Rajasthan Royals,Rajiv Gandhi Intl. Stadium,240,4,20.0,Win,3,0,Bowl,K. Yadav
+M094,2021,Kolkata Knight Riders,Delhi Capitals,Narendra Modi Stadium,141,9,20.0,Win,16,4,Bat,R. Kumar
+M095,2024,Delhi Capitals,Sunrisers Hyderabad,Rajiv Gandhi Intl. Stadium,197,2,20.0,Win,9,0,Bat,K. Yadav
+M096,2022,Chennai Super Kings,Rajasthan Royals,Eden Gardens,200,8,20.0,Win,50,0,Bowl,R. Kumar
+M097,2023,Sunrisers Hyderabad,Delhi Capitals,M. A. Chidambaram Stadium,186,5,20.0,Loss,0,0,Bat,P. Mehta
+M098,2023,Chennai Super Kings,Mumbai Indians,M. A. Chidambaram Stadium,156,8,20.0,Win,4,0,Bowl,N. Das
+M099,2025,Kolkata Knight Riders,Delhi Capitals,Eden Gardens,166,6,20.0,Win,2,3,Bat,K. Yadav
+M100,2021,Kolkata Knight Riders,Mumbai Indians,M. A. Chidambaram Stadium,227,10,19.3,Loss,0,0,Bowl,M. Singh
+M101,2020,Sunrisers Hyderabad,Mumbai Indians,M. A. Chidambaram Stadium,168,2,20.0,Win,41,3,Bat,K. Yadav
+M102,2025,Royal Challengers Bengaluru,Delhi Capitals,Narendra Modi Stadium,179,2,20.0,Win,31,0,Bat,S. Patel
+M103,2021,Delhi Capitals,Mumbai Indians,Narendra Modi Stadium,186,2,20.0,Loss,0,0,Bat,K. Yadav
+M104,2021,Rajasthan Royals,Gujarat Titans,Rajiv Gandhi Intl. Stadium,195,10,19.0,Win,36,0,Bat,P. Mehta
+M105,2021,Kolkata Knight Riders,Punjab Kings,Arun Jaitley Stadium,213,9,20.0,Loss,0,0,Bat,R. Kumar
+M106,2025,Delhi Capitals,Kolkata Knight Riders,Rajiv Gandhi Intl. Stadium,214,6,20.0,Loss,0,0,Bat,A. Sharma
+M107,2021,Kolkata Knight Riders,Lucknow Super Giants,Wankhede Stadium,165,8,20.0,Win,51,3,Bat,K. Yadav
+M108,2022,Chennai Super Kings,Sunrisers Hyderabad,Arun Jaitley Stadium,142,6,20.0,Win,41,8,Bowl,S. Patel
+M109,2024,Royal Challengers Bengaluru,Lucknow Super Giants,Wankhede Stadium,185,2,20.0,Loss,0,0,Bowl,P. Mehta
+M110,2023,Delhi Capitals,Kolkata Knight Riders,Wankhede Stadium,136,5,20.0,Loss,0,0,Bat,P. Mehta
+M111,2022,Chennai Super Kings,Kolkata Knight Riders,Eden Gardens,145,10,18.7,Win,42,2,Bowl,M. Singh
+M112,2025,Mumbai Indians,Lucknow Super Giants,Narendra Modi Stadium,160,8,20.0,Loss,0,0,Bowl,A. Sharma
+M113,2022,Sunrisers Hyderabad,Gujarat Titans,Rajiv Gandhi Intl. Stadium,142,10,19.3,Win,52,0,Bowl,N. Das
+M114,2024,Rajasthan Royals,Mumbai Indians,M. A. Chidambaram Stadium,156,6,20.0,Win,15,6,Bat,S. Patel
+M115,2022,Mumbai Indians,Kolkata Knight Riders,Eden Gardens,187,4,20.0,Win,22,0,Bowl,M. Singh
+M116,2025,Royal Challengers Bengaluru,Punjab Kings,Narendra Modi Stadium,187,3,20.0,Loss,0,0,Bat,P. Mehta
+M117,2023,Gujarat Titans,Rajasthan Royals,Rajiv Gandhi Intl. Stadium,184,8,20.0,Loss,0,0,Bat,N. Das
+M118,2022,Punjab Kings,Sunrisers Hyderabad,Wankhede Stadium,155,6,20.0,Win,14,0,Bat,R. Kumar
+M119,2023,Delhi Capitals,Punjab Kings,Eden Gardens,204,10,19.8,Loss,0,0,Bowl,M. Singh
+M120,2023,Royal Challengers Bengaluru,Lucknow Super Giants,M. A. Chidambaram Stadium,194,10,19.5,Loss,0,0,Bat,K. Yadav
