@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block title %}Model Arena | Machine Learning Comparison | StockAI{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+  
+  <!-- Header Bar -->
+  <div class="glass-card mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="logo-badge" style="width: 48px; height: 48px; font-size: 1.5rem; background: linear-gradient(135deg, #F59E0B, #EF4444);">
+          <i class="fa-solid fa-award"></i>
+        </div>
+        <div>
+          <h3 class="fw-bold mb-0 text-light">Machine Learning Model Arena</h3>
+          <div class="text-secondary small mt-1">
+            Head-to-head benchmark tournament evaluating 9 ML algorithms on historical stock dataset
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="d-flex align-items-center gap-2">
+        <select class="form-select form-select-custom" id="arena-symbol-select" style="width: 180px;">
+          {% for sym, info in supported_stocks.items() %}
+          <option value="{{ sym }}" {% if sym == symbol %}selected{% endif %}>{{ sym }} - {{ info.name.split(' ')[0] }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn-primary-glow" id="btn-run-arena">
+          <i class="fa-solid fa-trophy"></i> Run Tournament
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div id="arena-loading" class="text-center py-5 d-none">
+    <div class="spinner-border text-warning" style="width: 3rem; height: 3rem;" role="status"></div>
+    <div class="mt-3 text-light fw-bold">Benchmarking ML Models Across Folds...</div>
+    <div class="text-secondary small">Training Linear, Trees, Ensembles, SVMs, Naive Bayes & Neural Networks</div>
+  </div>
+
+  <div id="arena-content">
+    
+    <!-- Comparison Charts Row -->
+    <div class="row g-4 mb-4">
+      <!-- Regression RMSE Chart -->
+      <div class="col-lg-6">
+        <div class="glass-card h-100">
+          <div class="card-title-row">
+            <h5><i class="fa-solid fa-chart-column text-danger"></i> Price Prediction Error (RMSE - Lower is Better)</h5>
+          </div>
+          <div id="apex-arena-rmse" style="min-height: 280px;"></div>
+        </div>
+      </div>
+
+      <!-- Regression R² Score Chart -->
+      <div class="col-lg-6">
+        <div class="glass-card h-100">
+          <div class="card-title-row">
+            <h5><i class="fa-solid fa-chart-line text-success"></i> Goodness of Fit (R² Score - Higher is Better)</h5>
+          </div>
+          <div id="apex-arena-r2" style="min-height: 280px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaderboard Tables -->
+    <div class="row g-4">
+      
+      <!-- Regression Leaderboard -->
+      <div class="col-lg-6">
+        <div class="glass-card h-100">
+          <div class="card-title-row">
+            <h5><i class="fa-solid fa-ranking-star text-warning"></i> Regression Leaderboard (Price Forecasting)</h5>
+            <span class="badge bg-warning-subtle text-warning">Ranked by R² & RMSE</span>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table" id="table-reg-leaderboard">
+              <thead>
+                <tr>
+                  <th>Rank & Model</th>
+                  <th>RMSE ($)</th>
+                  <th>MAE ($)</th>
+                  <th>R² Score</th>
+                  <th>MAPE</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-reg-leaderboard">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Classification Leaderboard -->
+      <div class="col-lg-6">
+        <div class="glass-card h-100">
+          <div class="card-title-row">
+            <h5><i class="fa-solid fa-bullseye text-cyan"></i> Classification Leaderboard (Movement Direction)</h5>
+            <span class="badge bg-cyan-subtle text-cyan">Ranked by F1 & Accuracy</span>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table" id="table-clf-leaderboard">
+              <thead>
+                <tr>
+                  <th>Rank & Model</th>
+                  <th>Accuracy</th>
+                  <th>Precision</th>
+                  <th>Recall</th>
+                  <th>F1 Score</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-clf-leaderboard">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const symSelect = document.getElementById('arena-symbol-select');
+  const runBtn = document.getElementById('btn-run-arena');
+  const loading = document.getElementById('arena-loading');
+  const content = document.getElementById('arena-content');
+
+  let rmseChart = null;
+  let r2Chart = null;
+
+  runArena();
+
+  runBtn.addEventListener('click', runArena);
+  symSelect.addEventListener('change', runArena);
+
+  function runArena() {
+    const symbol = symSelect.value;
+    loading.classList.remove('d-none');
+    content.classList.add('opacity-50');
+
+    fetch(`/api/compare-models/${symbol}`)
+      .then(res => res.json())
+      .then(data => {
+        loading.classList.add('d-none');
+        content.classList.remove('opacity-50');
+
+        if (data.error) {
+          showToast(data.error, 'danger');
+          return;
+        }
+
+        renderLeaderboards(data);
+        renderCharts(data);
+      })
+      .catch(err => {
+        loading.classList.add('d-none');
+        content.classList.remove('opacity-50');
+        console.error(err);
+        showToast('Error running arena tournament.', 'danger');
+      });
+  }
+
+  function renderLeaderboards(data) {
+    // Regression Table
+    const tbodyReg = document.getElementById('tbody-reg-leaderboard');
+    tbodyReg.innerHTML = '';
+    const medals = ['🥇', '🥈', '🥉'];
+
+    data.regression_comparison.forEach((item, idx) => {
+      const badge = medals[idx] || `#${idx + 1}`;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fs-6">${badge}</span>
+            <span class="fw-bold text-light">${item.name}</span>
+          </div>
+        </td>
+        <td class="font-mono text-danger fw-bold">$${item.rmse}</td>
+        <td class="font-mono text-secondary">$${item.mae}</td>
+        <td class="font-mono text-success fw-bold">${item.r2}</td>
+        <td class="font-mono text-secondary">${item.mape}%</td>
+      `;
+      tbodyReg.appendChild(tr);
+    });
+
+    // Classification Table
+    const tbodyClf = document.getElementById('tbody-clf-leaderboard');
+    tbodyClf.innerHTML = '';
+    data.classification_comparison.forEach((item, idx) => {
+      const badge = medals[idx] || `#${idx + 1}`;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fs-6">${badge}</span>
+            <span class="fw-bold text-light">${item.name}</span>
+          </div>
+        </td>
+        <td class="font-mono text-light fw-bold">${item.accuracy}%</td>
+        <td class="font-mono text-secondary">${item.precision}%</td>
+        <td class="font-mono text-secondary">${item.recall}%</td>
+        <td class="font-mono text-primary fw-bold">${item.f1}%</td>
+      `;
+      tbodyClf.appendChild(tr);
+    });
+  }
+
+  function renderCharts(data) {
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const textColor = isDark ? '#94A3B8' : '#475569';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)';
+
+    const reg = data.regression_comparison;
+    const names = reg.map(r => r.name);
+    const rmses = reg.map(r => r.rmse);
+    const r2s = reg.map(r => r.r2);
+
+    // RMSE Chart
+    const rmseOptions = {
+      chart: { type: 'bar', height: 260, background: 'transparent', toolbar: { show: false } },
+      plotOptions: { bar: { horizontal: true, borderRadius: 4, distributed: true } },
+      colors: ['#10B981', '#3B82F6', '#06B6D4', '#8B5CF6', '#F59E0B', '#F43F5E', '#E11D48'],
+      series: [{ name: 'RMSE ($)', data: rmses }],
+      xaxis: { categories: names, labels: { style: { colors: textColor } } },
+      yaxis: { labels: { style: { colors: textColor } } },
+      legend: { show: false },
+      grid: { borderColor: gridColor },
+      theme: { mode: isDark ? 'dark' : 'light' }
+    };
+    if (rmseChart) rmseChart.destroy();
+    rmseChart = new ApexCharts(document.querySelector("#apex-arena-rmse"), rmseOptions);
+    rmseChart.render();
+
+    // R2 Chart
+    const r2Options = {
+      chart: { type: 'bar', height: 260, background: 'transparent', toolbar: { show: false } },
+      plotOptions: { bar: { borderRadius: 4, distributed: true } },
+      colors: ['#10B981', '#3B82F6', '#06B6D4', '#8B5CF6', '#F59E0B', '#F43F5E', '#E11D48'],
+      series: [{ name: 'R² Score', data: r2s }],
+      xaxis: { categories: names.map(n => n.split(' ')[0]), labels: { style: { colors: textColor }, rotate: -20 } },
+      yaxis: { min: 0, max: 1.0, labels: { style: { colors: textColor } } },
+      legend: { show: false },
+      grid: { borderColor: gridColor },
+      theme: { mode: isDark ? 'dark' : 'light' }
+    };
+    if (r2Chart) r2Chart.destroy();
+    r2Chart = new ApexCharts(document.querySelector("#apex-arena-r2"), r2Options);
+    r2Chart.render();
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+
+{% block title %}Clustering & PCA Analysis | StockAI Intelligence{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+  
+  <!-- Header Bar -->
+  <div class="glass-card mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="logo-badge" style="width: 48px; height: 48px; font-size: 1.5rem; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));">
+          <i class="fa-solid fa-cubes"></i>
+        </div>
+        <div>
+          <h3 class="fw-bold mb-0 text-light">Unsupervised Clustering & PCA Projection</h3>
+          <div class="text-secondary small mt-1">
+            Discover asset behavioral archetypes using K-Means and Principal Component Dimensionality Reduction
+          </div>
+        </div>
+      </div>
+
+      <!-- Cluster K Selector -->
+      <div class="d-flex align-items-center gap-2">
+        <label class="small text-secondary fw-bold mb-0">Clusters (k):</label>
+        <select class="form-select form-select-custom" id="select-k" style="width: 100px;">
+          <option value="2">k = 2</option>
+          <option value="3" selected>k = 3</option>
+          <option value="4">k = 4</option>
+        </select>
+        <button class="btn btn-primary-glow" id="btn-recluster">
+          <i class="fa-solid fa-arrows-rotate"></i> Recompute
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div id="cluster-loading" class="text-center py-5 d-none">
+    <div class="spinner-border text-cyan" style="width: 3rem; height: 3rem;" role="status"></div>
+    <div class="mt-3 text-light fw-bold">Performing K-Means Convergence & PCA Eigen-Decomposition...</div>
+  </div>
+
+  <div id="cluster-content">
+    
+    <!-- 2D PCA Scatter Chart & Correlation Heatmap -->
+    <div class="row g-4 mb-4">
+      
+      <!-- PCA 2D Scatter -->
+      <div class="col-xl-6">
+        <div class="glass-card h-100">
+          <div class="card-title-row">
+            <div>
+              <h5><i class="fa-solid fa-project-diagram text-cyan"></i> PCA 2D Coordinate Space</h5>
+              <div class="text-secondary small" id="pca-variance-info">Explained Variance: PC1 (--%) &bull; PC2 (--%)</div>
+            </div>
+            <span class="badge bg-cyan-subtle text-cyan">Dimensionality Reduced</span>
+          </div>
+          <div id="apex-pca-scatter" style="min-height: 340px;"></div>
+        </div>
+      </div>
+
+      <!-- Cross-Asset Correlation Heatmap -->
+      <div class="col-xl-6">
+        <div class="glass-card h-100">
+          <div class="card-title-row">
+            <h5><i class="fa-solid fa-border-all text-purple"></i> Cross-Asset Return Correlation Heatmap</h5>
+            <span class="badge bg-purple-subtle text-purple">Diversification Matrix</span>
+          </div>
+          <div id="apex-corr-heatmap" style="min-height: 340px;"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Cluster Cohort Breakdown Table -->
+    <div class="row g-4">
+      <div class="col-12">
+        <div class="glass-card">
+          <div class="card-title-row">
+            <h5><i class="fa-solid fa-layer-group text-warning"></i> Cluster Cohort Profiles</h5>
+            <span class="badge bg-secondary-subtle text-secondary" id="cluster-count-badge">Segments</span>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Stock Ticker</th>
+                  <th>Company & Sector</th>
+                  <th>Assigned Cluster</th>
+                  <th>Annual Return</th>
+                  <th>Annual Volatility</th>
+                  <th>Sharpe Ratio</th>
+                  <th>PCA Coordinates (X, Y)</th>
+                </tr>
+              </thead>
+              <tbody id="cluster-table-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const kSelect = document.getElementById('select-k');
+  const reclusterBtn = document.getElementById('btn-recluster');
+  const loading = document.getElementById('cluster-loading');
+  const content = document.getElementById('cluster-content');
+
+  let pcaChart = null;
+  let heatmapChart = null;
+
+  loadClustering();
+
+  reclusterBtn.addEventListener('click', loadClustering);
+  kSelect.addEventListener('change', loadClustering);
+
+  function loadClustering() {
+    const k = kSelect.value;
+    loading.classList.remove('d-none');
+    content.classList.add('opacity-50');
+
+    fetch(`/api/clustering?k=${k}`)
+      .then(res => res.json())
+      .then(data => {
+        loading.classList.add('d-none');
+        content.classList.remove('opacity-50');
+
+        renderPCA(data.clustering);
+        renderCorrelation(data.correlation);
+        renderTable(data.clustering.items);
+      })
+      .catch(err => {
+        loading.classList.add('d-none');
+        content.classList.remove('opacity-50');
+        console.error(err);
+        showToast('Error loading clustering data.', 'danger');
+      });
+  }
+
+  function renderPCA(clustering) {
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const textColor = isDark ? '#94A3B8' : '#475569';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)';
+
+    if (clustering.var_explained) {
+      document.getElementById('pca-variance-info').textContent = 
+        `Explained Variance: PC1 (${clustering.var_explained[0]}%) • PC2 (${clustering.var_explained[1]}%)`;
+    }
+
+    // Group items by cluster
+    const clusterGroups = {};
+    clustering.items.forEach(item => {
+      const cLabel = item.cluster_label;
+      if (!clusterGroups[cLabel]) clusterGroups[cLabel] = [];
+      clusterGroups[cLabel].push({
+        x: item.pca_x,
+        y: item.pca_y,
+        name: item.symbol
+      });
+    });
+
+    const series = Object.keys(clusterGroups).map(label => ({
+      name: label,
+      data: clusterGroups[label]
+    }));
+
+    const options = {
+      chart: {
+        type: 'scatter',
+        height: 340,
+        background: 'transparent',
+        toolbar: { show: true }
+      },
+      colors: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6'],
+      series: series,
+      xaxis: {
+        tickAmount: 6,
+        labels: { style: { colors: textColor }, formatter: val => val ? val.toFixed(1) : '' },
+        title: { text: 'Principal Component 1 (Growth / Return Axis)', style: { color: textColor } }
+      },
+      yaxis: {
+        tickAmount: 5,
+        labels: { style: { colors: textColor }, formatter: val => val ? val.toFixed(1) : '' },
+        title: { text: 'Principal Component 2 (Volatility Axis)', style: { color: textColor } }
+      },
+      tooltip: {
+        custom: function({ series, seriesIndex, dataPointIndex, w }) {
+          const pt = w.config.series[seriesIndex].data[dataPointIndex];
+          return `<div class="p-2 bg-dark text-light rounded border border-secondary">
+            <b>${pt.name}</b><br/>
+            Cluster: ${w.config.series[seriesIndex].name}<br/>
+            Coords: (${pt.x}, ${pt.y})
+          </div>`;
+        }
+      },
+      grid: { borderColor: gridColor },
+      theme: { mode: isDark ? 'dark' : 'light' }
+    };
+
+    if (pcaChart) pcaChart.destroy();
+    pcaChart = new ApexCharts(document.querySelector("#apex-pca-scatter"), options);
+    pcaChart.render();
+  }
+
+  function renderCorrelation(correlation) {
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const textColor = isDark ? '#94A3B8' : '#475569';
+
+    const labels = correlation.labels;
+    const series = [];
+
+    correlation.matrix.forEach((row, i) => {
+      series.push({
+        name: labels[i],
+        data: row.map((val, j) => ({ x: labels[j], y: val }))
+      });
+    });
+
+    const options = {
+      chart: { type: 'heatmap', height: 340, background: 'transparent', toolbar: { show: false } },
+      dataLabels: { enabled: true, style: { colors: ['#fff'] } },
+      colors: ['#3B82F6'],
+      series: series,
+      xaxis: { labels: { style: { colors: textColor } } },
+      yaxis: { labels: { style: { colors: textColor } } },
+      plotOptions: {
+        heatmap: {
+          shadeIntensity: 0.5,
+          colorScale: {
+            ranges: [
+              { from: -1.0, to: 0.2, name: 'Low / Negative', color: '#1E293B' },
+              { from: 0.21, to: 0.55, name: 'Moderate', color: '#0284C7' },
+              { from: 0.56, to: 0.80, name: 'High', color: '#2563EB' },
+              { from: 0.81, to: 1.0, name: 'Very High', color: '#4F46E5' }
+            ]
+          }
+        }
+      },
+      theme: { mode: isDark ? 'dark' : 'light' }
+    };
+
+    if (heatmapChart) heatmapChart.destroy();
+    heatmapChart = new ApexCharts(document.querySelector("#apex-corr-heatmap"), options);
+    heatmapChart.render();
+  }
+
+  function renderTable(items) {
+    const tbody = document.getElementById('cluster-table-tbody');
+    tbody.innerHTML = '';
+    const clusterColors = ['badge bg-primary-subtle text-primary', 'badge bg-success-subtle text-success', 'badge bg-warning-subtle text-warning', 'badge bg-purple-subtle text-purple'];
+
+    items.forEach(item => {
+      const tr = document.createElement('tr');
+      const badgeClass = clusterColors[item.cluster_id % clusterColors.length];
+
+      tr.innerHTML = `
+        <td class="fw-bold text-light">${item.symbol}</td>
+        <td><span class="text-secondary">${item.name}</span> <span class="badge bg-dark border text-muted ms-1">${item.sector}</span></td>
+        <td><span class="${badgeClass}">${item.cluster_label}</span></td>
+        <td class="font-mono text-success fw-bold">+${item.ann_return}%</td>
+        <td class="font-mono text-secondary">${item.ann_volatility}%</td>
+        <td class="font-mono text-light fw-bold">${item.sharpe_ratio}</td>
+        <td class="font-mono text-muted">(${item.pca_x}, ${item.pca_y})</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+});
+</script>
+{% endblock %}

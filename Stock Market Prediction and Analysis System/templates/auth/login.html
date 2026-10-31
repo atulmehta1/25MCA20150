@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign In | StockAI Intelligence{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+  <div class="col-md-6 col-lg-5 col-xl-4">
+    <div class="glass-card p-4">
+      <div class="text-center mb-4">
+        <div class="logo-badge mx-auto mb-3" style="width: 52px; height: 52px; font-size: 1.5rem;">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h4 class="fw-bold text-light">Welcome Back</h4>
+        <p class="text-secondary small">Access the AI Stock Prediction Platform</p>
+      </div>
+
+      <form method="POST" action="{{ url_for('auth.login', next=request.args.get('next')) }}">
+        <div class="mb-3">
+          <label class="form-label small text-secondary fw-bold">Username or Email</label>
+          <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fa-regular fa-user"></i></span>
+            <input type="text" name="username" class="form-control form-input-custom" placeholder="admin or demo" required autofocus>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label small text-secondary fw-bold">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fa-solid fa-key"></i></span>
+            <input type="password" name="password" class="form-control form-input-custom" placeholder="••••••••" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary-glow w-100 justify-content-center py-2 mb-3">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+        </button>
+
+        <div class="p-3 rounded-3 mb-3" style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); font-size: 0.8rem;">
+          <div class="fw-bold text-light mb-1">Pre-configured Demo Accounts:</div>
+          <div class="text-secondary">Admin: <span class="font-mono text-cyan">admin</span> / <span class="font-mono text-cyan">admin123</span></div>
+          <div class="text-secondary">Demo User: <span class="font-mono text-cyan">demo</span> / <span class="font-mono text-cyan">demo123</span></div>
+        </div>
+
+        <div class="text-center small text-secondary">
+          Don't have an account? <a href="{{ url_for('auth.register') }}" class="text-primary text-decoration-none fw-bold">Register</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

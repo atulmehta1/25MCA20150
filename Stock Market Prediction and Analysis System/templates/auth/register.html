@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Register | StockAI Intelligence{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+  <div class="col-md-6 col-lg-5 col-xl-4">
+    <div class="glass-card p-4">
+      <div class="text-center mb-4">
+        <div class="logo-badge mx-auto mb-3" style="width: 52px; height: 52px; font-size: 1.5rem; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));">
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+        <h4 class="fw-bold text-light">Create Account</h4>
+        <p class="text-secondary small">Join the StockAI Intelligence Network</p>
+      </div>
+
+      <form method="POST" action="{{ url_for('auth.register') }}">
+        <div class="mb-3">
+          <label class="form-label small text-secondary fw-bold">Username</label>
+          <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fa-regular fa-user"></i></span>
+            <input type="text" name="username" class="form-control form-input-custom" placeholder="Choose a username" required autofocus>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label small text-secondary fw-bold">Email Address</label>
+          <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fa-regular fa-envelope"></i></span>
+            <input type="email" name="email" class="form-control form-input-custom" placeholder="you@domain.com" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label small text-secondary fw-bold">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fa-solid fa-key"></i></span>
+            <input type="password" name="password" class="form-control form-input-custom" placeholder="Minimum 6 characters" required>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label small text-secondary fw-bold">Confirm Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fa-solid fa-check-double"></i></span>
+            <input type="password" name="confirm_password" class="form-control form-input-custom" placeholder="Confirm your password" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary-glow w-100 justify-content-center py-2 mb-3">
+          <i class="fa-solid fa-user-check"></i> Register Account
+        </button>
+
+        <div class="text-center small text-secondary">
+          Already registered? <a href="{{ url_for('auth.login') }}" class="text-primary text-decoration-none fw-bold">Sign In</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

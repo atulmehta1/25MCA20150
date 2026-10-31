@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Portal | StockAI Intelligence{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+  
+  <!-- Header Bar -->
+  <div class="glass-card mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="logo-badge" style="width: 48px; height: 48px; font-size: 1.5rem; background: linear-gradient(135deg, #EF4444, #8B5CF6);">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+          <h3 class="fw-bold mb-0 text-light">System Administration Portal</h3>
+          <div class="text-secondary small mt-1">
+            Manage user accounts, audit security logs, administer datasets, and trigger batch ML retraining
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary-glow" id="btn-batch-retrain">
+        <i class="fa-solid fa-arrows-spin"></i> Retrain All Models
+      </button>
+    </div>
+  </div>
+
+  <!-- Admin Stats Overview -->
+  <div class="row g-3 mb-4">
+    <div class="col-xl-4 col-sm-6">
+      <div class="glass-card stat-card">
+        <div class="stat-label">Registered Users</div>
+        <div class="stat-value text-light font-mono">{{ total_users }}</div>
+        <span class="stat-badge positive"><i class="fa-solid fa-users"></i> Platform Accounts</span>
+      </div>
+    </div>
+    <div class="col-xl-4 col-sm-6">
+      <div class="glass-card stat-card">
+        <div class="stat-label">Total Predictions Run</div>
+        <div class="stat-value text-light font-mono">{{ total_predictions }}</div>
+        <span class="stat-badge positive"><i class="fa-solid fa-chart-line"></i> Model Inferences</span>
+      </div>
+    </div>
+    <div class="col-xl-4 col-sm-12">
+      <div class="glass-card stat-card">
+        <div class="stat-label">Active Datasets</div>
+        <div class="stat-value text-cyan font-mono">{{ total_datasets }}</div>
+        <span class="stat-badge positive"><i class="fa-solid fa-database"></i> Equities Catalog</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Users & Datasets Management -->
+  <div class="row g-4 mb-4">
+    
+    <!-- User Management Table -->
+    <div class="col-lg-7">
+      <div class="glass-card h-100">
+        <div class="card-title-row">
+          <h5><i class="fa-solid fa-users-gear text-primary"></i> User Management</h5>
+          <span class="badge bg-secondary-subtle text-secondary">{{ users|length }} Total</span>
+        </div>
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Registered</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for u in users %}
+              <tr>
+                <td>
+                  <span class="fw-bold text-light">{{ u.username }}</span>
+                </td>
+                <td class="text-secondary small">{{ u.email }}</td>
+                <td>
+                  <span class="badge {% if u.role == 'admin' %}bg-danger-subtle text-danger{% else %}bg-primary-subtle text-primary{% endif %}">
+                    {{ u.role.upper() }}
+                  </span>
+                </td>
+                <td class="text-muted small">{{ u.created_at.strftime('%Y-%m-%d') if u.created_at else '--' }}</td>
+                <td class="text-end">
+                  {% if u.id != session.get('user_id') %}
+                  <div class="btn-group btn-group-sm">
+                    <form action="{{ url_for('admin.toggle_user_role', user_id=u.id) }}" method="POST" class="d-inline">
+                      <button type="submit" class="btn btn-outline-secondary" title="Toggle Admin/User Role">
+                        <i class="fa-solid fa-user-tag"></i>
+                      </button>
+                    </form>
+                    <form action="{{ url_for('admin.delete_user', user_id=u.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this user?');">
+                      <button type="submit" class="btn btn-outline-danger" title="Delete User">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                  {% else %}
+                  <span class="badge bg-secondary text-light small">Current</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Datasets Management Table -->
+    <div class="col-lg-5">
+      <div class="glass-card h-100">
+        <div class="card-title-row">
+          <h5><i class="fa-solid fa-database text-success"></i> Dataset Repository</h5>
+          <button class="btn btn-sm btn-secondary-glass" data-bs-toggle="modal" data-bs-target="#adminUploadModal">
+            <i class="fa-solid fa-plus"></i> Upload
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Filename</th>
+                <th>Symbol</th>
+                <th>Rows</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ds in datasets %}
+              <tr>
+                <td class="fw-bold text-light font-mono small">{{ ds.filename }}</td>
+                <td><span class="badge bg-primary">{{ ds.symbol }}</span></td>
+                <td class="font-mono text-secondary small">{{ ds.row_count }}</td>
+                <td>
+                  {% if ds.is_system %}
+                  <span class="badge bg-secondary-subtle text-secondary small">System</span>
+                  {% else %}
+                  <form action="{{ url_for('admin.delete_dataset', dataset_id=ds.id) }}" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-danger py-0" title="Delete Upload">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </form>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Prediction History & Audit Logs -->
+  <div class="row g-4">
+    
+    <!-- Prediction History Log -->
+    <div class="col-lg-7">
+      <div class="glass-card">
+        <div class="card-title-row">
+          <h5><i class="fa-solid fa-clock-rotate-left text-warning"></i> Platform Prediction History</h5>
+          <span class="badge bg-secondary-subtle text-secondary">Latest Logs</span>
+        </div>
+        <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
+          <table class="custom-table" style="font-size: 0.85rem;">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>User</th>
+                <th>Asset</th>
+                <th>Model</th>
+                <th>Task</th>
+                <th>Signal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in predictions %}
+              <tr>
+                <td class="text-muted small">{{ p.created_at.strftime('%m-%d %H:%M') if p.created_at else '--' }}</td>
+                <td class="fw-semibold text-light">{{ p.user.username if p.user else 'Guest' }}</td>
+                <td><span class="badge bg-primary font-mono">{{ p.symbol }}</span></td>
+                <td class="text-secondary">{{ p.model_name.split(' ')[0] }}</td>
+                <td><span class="badge bg-dark border text-muted small">{{ p.task_type }}</span></td>
+                <td>
+                  <span class="badge {% if p.signal == 'BUY' %}badge-signal-buy{% elif p.signal == 'SELL' %}badge-signal-sell{% else %}badge-signal-hold{% endif %}">
+                    {{ p.signal }}
+                  </span>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="6" class="text-center text-muted py-3">No prediction logs recorded yet.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security & Audit Trail -->
+    <div class="col-lg-5">
+      <div class="glass-card">
+        <div class="card-title-row">
+          <h5><i class="fa-solid fa-list-check text-info"></i> Security Audit Trail</h5>
+          <span class="badge bg-secondary-subtle text-secondary">System Events</span>
+        </div>
+        <div class="d-flex flex-column gap-2" style="max-height: 380px; overflow-y: auto;">
+          {% for log in logs %}
+          <div class="p-2 rounded-2" style="background: var(--bg-tertiary); font-size: 0.82rem;">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <span class="badge bg-secondary text-light font-mono">{{ log.action }}</span>
+              <span class="text-muted font-mono" style="font-size: 0.72rem;">{{ log.timestamp.strftime('%m-%d %H:%M:%S') if log.timestamp else '' }}</span>
+            </div>
+            <div class="text-light">{{ log.details }}</div>
+            <div class="text-muted" style="font-size: 0.72rem;">By: {{ log.username }}</div>
+          </div>
+          {% else %}
+          <div class="text-center text-muted py-3">No audit logs recorded yet.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Admin Upload Modal -->
+<div class="modal fade" id="adminUploadModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-card" style="background: var(--bg-secondary); border: 1px solid var(--border-subtle);">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold text-light"><i class="fa-solid fa-cloud-arrow-up text-primary me-2"></i> Upload Stock Dataset</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{{ url_for('admin.upload_dataset') }}" method="POST" enctype="multipart/form-data">
+        <div class="modal-body py-4">
+          <div class="mb-3">
+            <label class="form-label text-secondary small fw-bold">Stock Symbol</label>
+            <input type="text" name="symbol" class="form-control form-input-custom" placeholder="e.g. INFY, RELIANCE, NVDA" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label text-secondary small fw-bold">Select CSV File</label>
+            <input type="file" name="file" class="form-control form-input-custom" accept=".csv" required>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-secondary-glass" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary-glow">Save Dataset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const retrainBtn = document.getElementById('btn-batch-retrain');
+  if (retrainBtn) {
+    retrainBtn.addEventListener('click', () => {
+      retrainBtn.disabled = true;
+      retrainBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Retraining Models...';
+
+      fetch('/admin/models/retrain', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+          retrainBtn.disabled = false;
+          retrainBtn.innerHTML = '<i class="fa-solid fa-arrows-spin"></i> Retrain All Models';
+          showToast(data.message, 'success');
+        })
+        .catch(err => {
+          retrainBtn.disabled = false;
+          retrainBtn.innerHTML = '<i class="fa-solid fa-arrows-spin"></i> Retrain All Models';
+          showToast('Error executing retraining pipeline.', 'danger');
+        });
+    });
+  }
+});
+</script>
+{% endblock %}

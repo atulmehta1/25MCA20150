@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Stock Market AI Intelligence Platform{% endblock %}</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+  
+  <!-- Bootstrap 5.3 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- FontAwesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js & ApexCharts CDN for stunning interactive charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  
+  <!-- Custom Design System CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-header">
+        <div class="logo-badge">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div class="brand-text">
+          <h5>StockAI</h5>
+          <span>Intelligence Platform</span>
+        </div>
+        <button class="btn btn-sm d-lg-none text-muted ms-auto" id="sidebar-close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="menu-category">Market & Analytics</div>
+        <a href="{{ url_for('main.dashboard') }}" class="nav-item-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}">
+          <i class="fa-solid fa-table-columns"></i> Dashboard
+        </a>
+        <a href="{{ url_for('main.analysis') }}" class="nav-item-link {% if request.endpoint == 'main.analysis' %}active{% endif %}">
+          <i class="fa-solid fa-chart-candlestick"></i> Technical Charts
+        </a>
+
+        <div class="menu-category mt-3">Machine Learning</div>
+        <a href="{{ url_for('main.prediction') }}" class="nav-item-link {% if request.endpoint == 'main.prediction' %}active{% endif %}">
+          <i class="fa-solid fa-brain"></i> ML Forecasting
+        </a>
+        <a href="{{ url_for('main.model_arena') }}" class="nav-item-link {% if request.endpoint == 'main.model_arena' %}active{% endif %}">
+          <i class="fa-solid fa-award"></i> Model Arena
+        </a>
+
+        <div class="menu-category mt-3">AI Intelligence</div>
+        <a href="{{ url_for('main.portfolio') }}" class="nav-item-link {% if request.endpoint == 'main.portfolio' %}active{% endif %}">
+          <i class="fa-solid fa-pie-chart"></i> Portfolio Optimizer
+        </a>
+        <a href="{{ url_for('main.clustering_pca') }}" class="nav-item-link {% if request.endpoint == 'main.clustering_pca' %}active{% endif %}">
+          <i class="fa-solid fa-cubes"></i> Clustering & PCA
+        </a>
+        <a href="{{ url_for('main.sentiment') }}" class="nav-item-link {% if request.endpoint == 'main.sentiment' %}active{% endif %}">
+          <i class="fa-solid fa-newspaper"></i> News NLP Sentiment
+        </a>
+
+        <div class="menu-category mt-3">Data & Admin</div>
+        <a href="{{ url_for('main.datasets') }}" class="nav-item-link {% if request.endpoint == 'main.datasets' %}active{% endif %}">
+          <i class="fa-solid fa-database"></i> Datasets Studio
+        </a>
+        {% if session.get('role') == 'admin' %}
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="nav-item-link {% if 'admin' in request.endpoint %}active{% endif %}">
+          <i class="fa-solid fa-shield-halved"></i> Admin Portal
+        </a>
+        {% endif %}
+      </div>
+
+      <div class="sidebar-footer">
+        {% if session.get('user_id') %}
+        <div class="d-flex align-items-center justify-content-between">
+          <a href="{{ url_for('auth.profile') }}" class="text-decoration-none d-flex align-items-center gap-2">
+            <div class="user-avatar">
+              {{ session.get('username', 'U')[0].upper() }}
+            </div>
+            <div>
+              <div class="text-light fw-bold" style="font-size: 0.88rem;">{{ session.get('username') }}</div>
+              <span class="badge bg-primary-subtle text-primary" style="font-size: 0.65rem;">{{ session.get('role', 'user').upper() }}</span>
+            </div>
+          </a>
+          <a href="{{ url_for('auth.logout') }}" class="btn-icon" title="Logout">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </a>
+        </div>
+        {% else %}
+        <div class="d-grid gap-2">
+          <a href="{{ url_for('auth.login') }}" class="btn btn-sm btn-primary-glow justify-content-center">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </aside>
+
+    <!-- Main Viewport -->
+    <main class="app-main">
+      
+      <!-- Top Navigation Bar -->
+      <header class="app-header">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn-icon sidebar-toggle-btn" id="sidebar-toggle" title="Toggle Navigation">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="ticker-search-wrapper">
+            <i class="fa-solid fa-magnifying-glass ticker-search-icon"></i>
+            <input 
+              type="text" 
+              class="ticker-search-input" 
+              id="global-ticker-search" 
+              placeholder="Search ticker (e.g. AAPL, NVDA, TSLA)..."
+              autocomplete="off"
+            >
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn-icon" id="theme-toggle-btn" title="Toggle Theme">
+            <i class="fa-solid fa-sun" id="theme-toggle-icon"></i>
+          </button>
+          
+          {% if session.get('user_id') %}
+          <a href="{{ url_for('auth.profile') }}" class="btn-icon" title="User Profile">
+            <i class="fa-regular fa-user"></i>
+          </a>
+          {% else %}
+          <a href="{{ url_for('auth.register') }}" class="btn btn-sm btn-secondary-glass">
+            Register
+          </a>
+          {% endif %}
+        </div>
+      </header>
+
+      <!-- Live Market Ticker Ribbon -->
+      <div class="market-ticker-ribbon">
+        {% for sym, info in supported_stocks.items() %}
+        <a href="{{ url_for('main.analysis', symbol=sym) }}" class="ticker-pill">
+          <span class="sym">{{ sym }}</span>
+          <span class="text-muted" style="font-size: 0.75rem;">{{ info.name.split(' ')[0] }}</span>
+          <span class="badge bg-secondary-subtle text-secondary" style="font-size: 0.65rem;">Active</span>
+        </a>
+        {% endfor %}
+      </div>
+
+      <!-- Flash Messages Toast / Container -->
+      <div class="px-4 pt-3" id="toast-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+
+      <!-- Page Content -->
+      <div class="content-body">
+        {% block content %}{% endblock %}
+      </div>
+
+      <!-- Footer -->
+      <footer class="p-3 text-center text-muted" style="border-top: 1px solid var(--border-subtle); font-size: 0.8rem;">
+        StockAI Intelligence Platform &copy; {{ current_year }} &bull; Machine Learning Stock Forecasting & Investment Assistant
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Global App JS -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

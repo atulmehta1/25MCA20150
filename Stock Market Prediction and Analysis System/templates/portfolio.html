@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Portfolio Optimizer | StockAI Intelligence{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+  
+  <!-- Header Bar -->
+  <div class="glass-card mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="logo-badge" style="width: 48px; height: 48px; font-size: 1.5rem; background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));">
+          <i class="fa-solid fa-pie-chart"></i>
+        </div>
+        <div>
+          <h3 class="fw-bold mb-0 text-light">AI Investment Portfolio Optimizer</h3>
+          <div class="text-secondary small mt-1">
+            Modern Portfolio Theory & Markowitz Mean-Variance Optimization tailored to your capital and risk profile
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Portfolio Input Controls -->
+    <div class="row g-3 align-items-end pt-3 mt-1" style="border-top: 1px solid var(--border-subtle);">
+      <div class="col-lg-3 col-md-6">
+        <label class="form-label small text-secondary fw-bold">Total Capital to Invest ($)</label>
+        <div class="input-group">
+          <span class="input-group-text bg-dark border-secondary text-secondary">$</span>
+          <input type="number" class="form-control form-input-custom" id="input-amount" value="25000" min="500" step="500">
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <label class="form-label small text-secondary fw-bold">Risk Tolerance Profile</label>
+        <select class="form-select form-select-custom" id="select-risk">
+          <option value="Low">Conservative (Low Risk / Preservation)</option>
+          <option value="Medium" selected>Moderate (Balanced Growth & Return)</option>
+          <option value="High">Aggressive (High Growth / Upside)</option>
+        </select>
+      </div>
+
+      <div class="col-lg-4 col-md-8">
+        <label class="form-label small text-secondary fw-bold">Asset Pool Selection</label>
+        <div class="d-flex flex-wrap gap-2 pt-1">
+          {% for sym in supported_stocks.keys() %}
+          <div class="form-check form-check-inline mb-0">
+            <input class="form-check-input stock-pool-check" type="checkbox" value="{{ sym }}" id="pool-{{ sym }}" checked>
+            <label class="form-check-label small text-light" for="pool-{{ sym }}">{{ sym }}</label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-4">
+        <button class="btn btn-primary-glow w-100 justify-content-center" id="btn-generate-portfolio">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Plan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div id="portfolio-loading" class="text-center py-5 d-none">
+    <div class="spinner-border text-success" style="width: 3rem; height: 3rem;" role="status"></div>
+    <div class="mt-3 text-light fw-bold">Optimizing Asset Covariance & Efficient Frontier...</div>
+    <div class="text-secondary small">Computing Sharpe-maximizing weights and risk budgeting</div>
+  </div>
+
+  <div id="portfolio-results">
+    
+    <!-- 3 Projected Metrics Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="glass-card stat-card">
+          <div class="stat-label">Projected Annual Return</div>
+          <div class="stat-value text-success font-mono" id="port-return">--</div>
+          <span class="stat-badge positive"><i class="fa-solid fa-arrow-trend-up"></i> Weighted Annual Compound</span>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="glass-card stat-card">
+          <div class="stat-label">Portfolio Volatility (Risk)</div>
+          <div class="stat-value text-light font-mono" id="port-volatility">--</div>
+          <span class="stat-badge positive" id="port-risk-badge">Diversified Beta</span>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-12">
+        <div class="glass-card stat-card">
+          <div class="stat-label">Portfolio Sharpe Ratio</div>
+          <div class="stat-value text-cyan font-mono" id="port-sharpe">--</div>
+          <span class="stat-badge positive"><i class="fa-solid fa-shield"></i> Risk-Adjusted Efficiency</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Donut Chart & Allocation Breakdown Table -->
+    <div class="row g-4">
+      
+      <!-- Chart -->
+      <div class="col-xl-5">
+        <div class="glass-card h-100">
+          <div class="card-title-row">
+            <h5><i class="fa-solid fa-chart-pie text-cyan"></i> Target Capital Allocation</h5>
+            <span class="badge bg-primary-subtle text-primary" id="port-risk-label">Balanced Strategy</span>
+          </div>
+          <div id="apex-portfolio-donut" style="min-height: 320px;"></div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="col-xl-7">
+        <div class="glass-card h-100">
+          <div class="card-title-row">
+            <h5><i class="fa-solid fa-receipt text-success"></i> Portfolio Execution Breakdown</h5>
+            <span class="badge bg-secondary-subtle text-secondary" id="port-count-badge">Assets</span>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Asset</th>
+                  <th>Weight (%)</th>
+                  <th>Capital Allocation</th>
+                  <th>Approx Shares</th>
+                  <th>Risk Profile</th>
+                </tr>
+              </thead>
+              <tbody id="port-alloc-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const amountInput = document.getElementById('input-amount');
+  const riskSelect = document.getElementById('select-risk');
+  const generateBtn = document.getElementById('btn-generate-portfolio');
+  const loading = document.getElementById('portfolio-loading');
+  const results = document.getElementById('portfolio-results');
+
+  let donutChart = null;
+
+  generatePlan();
+
+  generateBtn.addEventListener('click', generatePlan);
+
+  function generatePlan() {
+    const amount = parseFloat(amountInput.value) || 10000;
+    const risk = riskSelect.value;
+    const checkedBoxes = document.querySelectorAll('.stock-pool-check:checked');
+    const selected = Array.from(checkedBoxes).map(cb => cb.value);
+
+    if (selected.length === 0) {
+      showToast('Please select at least one stock for the asset pool.', 'warning');
+      return;
+    }
+
+    loading.classList.remove('d-none');
+    results.classList.add('opacity-50');
+
+    fetch('/api/portfolio/recommend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: amount,
+        risk_tolerance: risk,
+        stocks: selected
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      loading.classList.add('d-none');
+      results.classList.remove('opacity-50');
+
+      if (data.error) {
+        showToast(data.error, 'danger');
+        return;
+      }
+
+      renderPortfolio(data);
+    })
+    .catch(err => {
+      loading.classList.add('d-none');
+      results.classList.remove('opacity-50');
+      console.error(err);
+      showToast('Error calculating portfolio optimization.', 'danger');
+    });
+  }
+
+  function renderPortfolio(data) {
+    document.getElementById('port-return').textContent = `+${data.expected_annual_return}%`;
+    document.getElementById('port-volatility').textContent = `${data.expected_volatility}%`;
+    document.getElementById('port-sharpe').textContent = data.sharpe_ratio;
+    document.getElementById('port-risk-label').textContent = `${data.risk_tolerance} Risk Strategy`;
+    document.getElementById('port-count-badge').textContent = `${data.allocations.length} Selected`;
+
+    // Render Table
+    const tbody = document.getElementById('port-alloc-tbody');
+    tbody.innerHTML = '';
+    const labels = [];
+    const series = [];
+
+    data.allocations.forEach(item => {
+      labels.push(item.symbol);
+      series.push(item.weight_pct);
+
+      const tr = document.createElement('tr');
+      const riskBadge = item.risk_level === 'High' ? 'bg-danger-subtle text-danger' : (item.risk_level === 'Low' ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning');
+      
+      tr.innerHTML = `
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fw-bold text-light">${item.symbol}</span>
+            <span class="text-muted small">${item.name.split(' ')[0]}</span>
+          </div>
+        </td>
+        <td class="font-mono fw-bold text-primary">${item.weight_pct}%</td>
+        <td class="font-mono text-light fw-bold">$${item.amount.toLocaleString()}</td>
+        <td class="font-mono text-secondary">~${item.shares_approx} shares</td>
+        <td><span class="badge ${riskBadge}">${item.risk_level}</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Render Donut Chart
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const options = {
+      chart: { type: 'donut', height: 320, background: 'transparent' },
+      series: series,
+      labels: labels,
+      colors: ['#3B82F6', '#10B981', '#06B6D4', '#8B5CF6', '#F59E0B', '#EC4899', '#6366F1'],
+      stroke: { width: 0 },
+      legend: {
+        position: 'bottom',
+        labels: { colors: isDark ? '#94A3B8' : '#475569' }
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: (val) => val.toFixed(1) + '%'
+      },
+      theme: { mode: isDark ? 'dark' : 'light' }
+    };
+
+    if (donutChart) donutChart.destroy();
+    donutChart = new ApexCharts(document.querySelector("#apex-portfolio-donut"), options);
+    donutChart.render();
+  }
+});
+</script>
+{% endblock %}

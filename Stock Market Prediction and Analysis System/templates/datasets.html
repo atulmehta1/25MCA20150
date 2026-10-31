@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block title %}Datasets & Preprocessing Studio | StockAI{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+  
+  <!-- Header Bar -->
+  <div class="glass-card mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="logo-badge" style="width: 48px; height: 48px; font-size: 1.5rem; background: linear-gradient(135deg, #10B981, #06B6D4);">
+          <i class="fa-solid fa-database"></i>
+        </div>
+        <div>
+          <h3 class="fw-bold mb-0 text-light">Dataset Preprocessing & Feature Engineering Studio</h3>
+          <div class="text-secondary small mt-1">
+            Inspect raw time-series data, handle missing values, apply standardization, and explore descriptive statistics
+          </div>
+        </div>
+      </div>
+
+      <!-- Action: Upload CSV -->
+      <button class="btn btn-primary-glow" data-bs-toggle="modal" data-bs-target="#uploadModal">
+        <i class="fa-solid fa-cloud-arrow-up"></i> Upload Custom CSV
+      </button>
+    </div>
+
+    <!-- Dataset Selector Row -->
+    <div class="d-flex align-items-center gap-3 pt-3 mt-3 flex-wrap" style="border-top: 1px solid var(--border-subtle);">
+      <span class="small text-secondary fw-bold">Active Dataset:</span>
+      <select class="form-select form-select-custom" style="width: 220px;" onchange="window.location.href='/datasets?file=' + this.value">
+        <optgroup label="System Equities">
+          {% for ds in system_datasets %}
+          <option value="{{ ds.filename }}" {% if ds.filename == selected_file %}selected{% endif %}>{{ ds.filename }} ({{ ds.symbol }})</option>
+          {% endfor %}
+        </optgroup>
+        {% if user_datasets %}
+        <optgroup label="Custom Uploads">
+          {% for ds in user_datasets %}
+          <option value="{{ ds.filename }}" {% if ds.filename == selected_file %}selected{% endif %}>{{ ds.filename }}</option>
+          {% endfor %}
+        </optgroup>
+        {% endif %}
+      </select>
+
+      <span class="badge bg-secondary-subtle text-secondary">{{ inspection.total_rows if inspection else 0 }} Data Points</span>
+      <a href="{{ url_for('main.prediction', symbol=selected_file.split('.')[0]) }}" class="btn btn-sm btn-secondary-glass ms-auto">
+        Train ML on this Data <i class="fa-solid fa-arrow-right ms-1"></i>
+      </a>
+    </div>
+  </div>
+
+  {% if inspection %}
+  <!-- Dataset Health Metric Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-xl-3 col-sm-6">
+      <div class="glass-card stat-card">
+        <div class="stat-label">Total Observations</div>
+        <div class="stat-value text-light font-mono">{{ inspection.total_rows }}</div>
+        <span class="stat-badge positive"><i class="fa-solid fa-check"></i> Trading Days</span>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+      <div class="glass-card stat-card">
+        <div class="stat-label">Features Count</div>
+        <div class="stat-value text-light font-mono">{{ inspection.columns|length }}</div>
+        <span class="stat-badge positive">OHLCV Schema</span>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+      <div class="glass-card stat-card">
+        <div class="stat-label">Missing Values Status</div>
+        {% set total_nulls = namespace(val=0) %}
+        {% for col, cnt in inspection.null_counts.items() %}{% set total_nulls.val = total_nulls.val + cnt %}{% endfor %}
+        <div class="stat-value {% if total_nulls.val == 0 %}text-success{% else %}text-warning{% endif %} font-mono">
+          {{ total_nulls.val }}
+        </div>
+        <span class="stat-badge {% if total_nulls.val == 0 %}positive{% else %}negative{% endif %}">
+          {% if total_nulls.val == 0 %}Clean & Ready{% else %}Imputation Recommended{% endif %}
+        </span>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+      <div class="glass-card stat-card">
+        <div class="stat-label">Data Transformation</div>
+        <div class="stat-value text-cyan font-mono" style="font-size: 1.25rem;">Z-Score & MinMax</div>
+        <span class="stat-badge positive">Standard Scalers</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Raw Data Preview Table -->
+  <div class="row g-4 mb-4">
+    <div class="col-12">
+      <div class="glass-card">
+        <div class="card-title-row">
+          <h5><i class="fa-solid fa-table text-primary"></i> Data Preview (First 10 Observations)</h5>
+          <span class="badge bg-primary-subtle text-primary">Structured Schema</span>
+        </div>
+        <div class="table-responsive">
+          <table class="custom-table font-mono" style="font-size: 0.85rem;">
+            <thead>
+              <tr>
+                {% for col in inspection.columns %}
+                <th>{{ col }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in inspection.preview %}
+              <tr>
+                {% for col in inspection.columns %}
+                <td>{{ row[col] }}</td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Descriptive Summary Statistics Table -->
+  <div class="row g-4">
+    <div class="col-12">
+      <div class="glass-card">
+        <div class="card-title-row">
+          <h5><i class="fa-solid fa-calculator text-warning"></i> Descriptive Summary Statistics</h5>
+          <span class="badge bg-secondary-subtle text-secondary">Pandas Describe</span>
+        </div>
+        <div class="table-responsive">
+          <table class="custom-table font-mono" style="font-size: 0.85rem;">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                {% for col in inspection.summary_stats.keys() %}
+                <th>{{ col }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for stat_name in ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max'] %}
+              <tr>
+                <td class="fw-bold text-light">{{ stat_name.upper() }}</td>
+                {% for col, vals in inspection.summary_stats.items() %}
+                <td class="text-secondary">{{ vals[stat_name] }}</td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="glass-card text-center py-5">
+    <i class="fa-solid fa-triangle-exclamation text-warning fs-1 mb-3"></i>
+    <h4 class="text-light">Dataset Not Found</h4>
+    <p class="text-secondary">Please select another dataset from the dropdown or upload a custom CSV.</p>
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-card" style="background: var(--bg-secondary); border: 1px solid var(--border-subtle);">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold text-light"><i class="fa-solid fa-cloud-arrow-up text-primary me-2"></i> Upload Custom Stock CSV</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{{ url_for('admin.upload_dataset') }}" method="POST" enctype="multipart/form-data">
+        <div class="modal-body py-4">
+          <div class="mb-3">
+            <label class="form-label text-secondary small fw-bold">Stock Ticker Symbol (optional)</label>
+            <input type="text" name="symbol" class="form-control form-input-custom" placeholder="e.g. INFY, RELIANCE, NVDA">
+          </div>
+          <div class="mb-3">
+            <label class="form-label text-secondary small fw-bold">Select CSV File</label>
+            <input type="file" name="file" class="form-control form-input-custom" accept=".csv,.txt" required>
+            <div class="form-text text-muted" style="font-size: 0.75rem;">
+              File should contain columns: Date, Open, High, Low, Close, Volume.
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-secondary-glass" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary-glow">Upload & Inspect</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

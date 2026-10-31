@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% block title %}News Sentiment NLP | StockAI Intelligence{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+  
+  <!-- Header Bar -->
+  <div class="glass-card mb-4">
+    <div class="d-flex align-items-center gap-3">
+      <div class="logo-badge" style="width: 48px; height: 48px; font-size: 1.5rem; background: linear-gradient(135deg, #06B6D4, #3B82F6);">
+        <i class="fa-solid fa-newspaper"></i>
+      </div>
+      <div>
+        <h3 class="fw-bold mb-0 text-light">Financial News NLP Sentiment Engine</h3>
+        <div class="text-secondary small mt-1">
+          Natural Language Processing with TF-IDF Vectorization, N-Grams, and Supervised Classification (Logistic Regression & Naive Bayes)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Headline Analyzer Card -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-7">
+      <div class="glass-card h-100">
+        <div class="card-title-row">
+          <h5><i class="fa-solid fa-magnifying-glass-chart text-cyan"></i> Custom Headline Analyzer</h5>
+          <div class="d-flex align-items-center gap-2">
+            <span class="small text-secondary fw-bold">NLP Model:</span>
+            <select class="form-select form-select-custom py-1" id="sentiment-model-select" style="width: 190px;">
+              <option value="logistic_regression" selected>Logistic Regression (TF-IDF)</option>
+              <option value="naive_bayes">Multinomial Naive Bayes</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label small text-secondary fw-semibold">Enter Financial News Headline, Press Release, or Earnings Snippet:</label>
+          <textarea class="form-control form-input-custom" id="sentiment-input-text" rows="3" placeholder="e.g. Apple quarterly revenue surpasses Wall Street expectations as iPhone 16 supercycle drives double digit operating income growth..."></textarea>
+        </div>
+
+        <!-- Quick Sample Chips -->
+        <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
+          <span class="small text-muted">Try sample:</span>
+          <button type="button" class="btn btn-sm btn-outline-secondary py-0 sample-chip" data-text="Operating margins expanded by 420 basis points as corporate cloud demand accelerates">Record Margin Beat</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary py-0 sample-chip" data-text="Company slashes annual revenue guidance citing severe macroeconomic headwinds and slowing retail sales">Guidance Downgrade</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary py-0 sample-chip" data-text="Federal Open Market Committee holds benchmark interest rate unchanged following policy summit">Fed Rate Hold</button>
+        </div>
+
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-primary-glow" id="btn-analyze-sentiment">
+            <i class="fa-solid fa-bolt"></i> Classify Sentiment
+          </button>
+        </div>
+
+        <!-- Analysis Output Container -->
+        <div id="sentiment-analysis-output" class="mt-4 pt-3 d-none" style="border-top: 1px solid var(--border-subtle);">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+              <div class="text-muted small text-uppercase fw-bold">Sentiment Classification</div>
+              <div class="d-flex align-items-center gap-2 mt-1">
+                <span class="fs-4 fw-bold" id="sent-result-label">BULLISH</span>
+                <span class="badge bg-secondary-subtle text-secondary" id="sent-conf-badge">94% Confidence</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <div class="text-muted small text-uppercase fw-bold">Polarity Score</div>
+              <div class="fs-4 fw-bold font-mono" id="sent-polarity-score">+0.88</div>
+            </div>
+          </div>
+
+          <!-- Class Probabilities Progress Bars -->
+          <div class="mb-3">
+            <div class="d-flex justify-content-between small text-secondary mb-1">
+              <span>Bullish: <b id="prob-bull">85%</b></span>
+              <span>Neutral: <b id="prob-neut">10%</b></span>
+              <span>Bearish: <b id="prob-bear">5%</b></span>
+            </div>
+            <div class="progress" style="height: 10px;">
+              <div class="progress-bar bg-success" id="bar-bull" style="width: 85%"></div>
+              <div class="progress-bar bg-warning" id="bar-neut" style="width: 10%"></div>
+              <div class="progress-bar bg-danger" id="bar-bear" style="width: 5%"></div>
+            </div>
+          </div>
+
+          <!-- TF-IDF Keyword Weights -->
+          <div>
+            <div class="small text-secondary fw-bold mb-2">Prominent TF-IDF Keywords & Weight:</div>
+            <div class="d-flex flex-wrap gap-2" id="keywords-container">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Live Market Headline Stream -->
+    <div class="col-lg-5">
+      <div class="glass-card h-100">
+        <div class="card-title-row">
+          <h5><i class="fa-solid fa-rss text-warning"></i> Real-time Financial News Stream</h5>
+          <span class="badge bg-primary-subtle text-primary">Live Sentiment</span>
+        </div>
+        <div class="d-flex flex-column gap-3">
+          {% for item in news %}
+          <div class="p-3 rounded-3" style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle);">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <span class="badge bg-primary fw-bold font-mono">{{ item.symbol }}</span>
+              <span class="badge {% if item.sentiment == 'Bullish' %}badge-signal-buy{% elif item.sentiment == 'Bearish' %}badge-signal-sell{% else %}badge-signal-hold{% endif %}">
+                {{ item.sentiment }} ({{ item.confidence }}%)
+              </span>
+            </div>
+            <p class="text-light small mb-2 fw-medium">{{ item.headline }}</p>
+            <div class="d-flex align-items-center justify-content-between text-muted" style="font-size: 0.75rem;">
+              <span>{{ item.source }} &bull; {{ item.time }}</span>
+              <button class="btn btn-sm btn-link text-primary p-0 text-decoration-none copy-headline-btn" data-text="{{ item.headline }}">
+                Analyze <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+              </button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const analyzeBtn = document.getElementById('btn-analyze-sentiment');
+  const inputArea = document.getElementById('sentiment-input-text');
+  const modelSelect = document.getElementById('sentiment-model-select');
+  const outputDiv = document.getElementById('sentiment-analysis-output');
+
+  // Sample Chips
+  document.querySelectorAll('.sample-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      inputArea.value = chip.getAttribute('data-text');
+      triggerAnalysis();
+    });
+  });
+
+  // Copy headline buttons
+  document.querySelectorAll('.copy-headline-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      inputArea.value = btn.getAttribute('data-text');
+      triggerAnalysis();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  analyzeBtn.addEventListener('click', triggerAnalysis);
+
+  function triggerAnalysis() {
+    const text = inputArea.value.trim();
+    if (!text) {
+      showToast('Please enter text to analyze.', 'warning');
+      return;
+    }
+
+    const model = modelSelect.value;
+    outputDiv.classList.add('opacity-50');
+
+    fetch('/api/sentiment/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text, model: model })
+    })
+    .then(res => res.json())
+    .then(data => {
+      outputDiv.classList.remove('opacity-50');
+      outputDiv.classList.remove('d-none');
+
+      const label = document.getElementById('sent-result-label');
+      label.textContent = data.sentiment.toUpperCase();
+      label.className = 'fs-4 fw-bold ' + (data.sentiment === 'Bullish' ? 'text-success' : (data.sentiment === 'Bearish' ? 'text-danger' : 'text-warning'));
+
+      document.getElementById('sent-conf-badge').textContent = `${data.confidence}% Confidence (${data.model_used})`;
+
+      const scoreEl = document.getElementById('sent-polarity-score');
+      const score = data.polarity_score;
+      scoreEl.textContent = (score >= 0 ? '+' : '') + score.toFixed(2);
+      scoreEl.className = 'fs-4 fw-bold font-mono ' + (score > 0 ? 'text-success' : (score < 0 ? 'text-danger' : 'text-warning'));
+
+      // Probabilities
+      const p = data.probabilities;
+      document.getElementById('prob-bull').textContent = p.bullish + '%';
+      document.getElementById('prob-neut').textContent = p.neutral + '%';
+      document.getElementById('prob-bear').textContent = p.bearish + '%';
+
+      document.getElementById('bar-bull').style.width = p.bullish + '%';
+      document.getElementById('bar-neut').style.width = p.neutral + '%';
+      document.getElementById('bar-bear').style.width = p.bearish + '%';
+
+      // Keywords
+      const kwContainer = document.getElementById('keywords-container');
+      kwContainer.innerHTML = '';
+      if (data.top_keywords && data.top_keywords.length) {
+        data.top_keywords.forEach(kw => {
+          const span = document.createElement('span');
+          span.className = 'badge bg-secondary-subtle text-secondary font-mono';
+          span.textContent = `${kw[0]} (${kw[1]})`;
+          kwContainer.appendChild(span);
+        });
+      } else {
+        kwContainer.innerHTML = '<span class="text-muted small">General vocabulary</span>';
+      }
+    })
+    .catch(err => {
+      outputDiv.classList.remove('opacity-50');
+      console.error(err);
+      showToast('Error analyzing sentiment.', 'danger');
+    });
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,517 @@
+{% extends 'base.html' %}
+
+{% block title %}ML Forecasting Studio | {{ symbol }} | StockAI{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+
+  <!-- Header Banner & Control Panel -->
+  <div class="glass-card mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="logo-badge" style="width: 48px; height: 48px; font-size: 1.5rem; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));">
+          <i class="fa-solid fa-brain"></i>
+        </div>
+        <div>
+          <h3 class="fw-bold mb-0 text-light">Machine Learning Forecasting Studio</h3>
+          <div class="text-secondary small mt-1">
+            Train, validate, and evaluate regression & classification models on historical stock price data
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons (Export PDF / CSV) -->
+      <div class="d-flex align-items-center gap-2">
+        <a id="btn-download-pdf" href="/api/download/report/pdf?symbol={{ symbol }}&model=random_forest" class="btn btn-sm btn-secondary-glass" title="Download Executive PDF Report">
+          <i class="fa-solid fa-file-pdf text-danger"></i> Export PDF Report
+        </a>
+        <a id="btn-download-csv" href="/api/download/report/csv?symbol={{ symbol }}&model=random_forest" class="btn btn-sm btn-secondary-glass" title="Download CSV Data">
+          <i class="fa-solid fa-file-csv text-success"></i> Export CSV
+        </a>
+      </div>
+    </div>
+
+    <!-- Parameter Config Form -->
+    <div class="row g-3 align-items-end pt-2" style="border-top: 1px solid var(--border-subtle);">
+      <div class="col-lg-2 col-md-4 col-sm-6">
+        <label class="form-label small text-secondary fw-bold">Stock Symbol</label>
+        <select class="form-select form-select-custom" id="param-symbol">
+          {% for sym, info in supported_stocks.items() %}
+          <option value="{{ sym }}" {% if sym == symbol %}selected{% endif %}>{{ sym }} - {{ info.name.split(' ')[0] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6">
+        <label class="form-label small text-secondary fw-bold">Task Objective</label>
+        <select class="form-select form-select-custom" id="param-task">
+          <option value="regression" selected>Price Forecast (Regression)</option>
+          <option value="classification">Trend Direction (Up/Down)</option>
+        </select>
+      </div>
+
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <label class="form-label small text-secondary fw-bold">ML Algorithm</label>
+        <select class="form-select form-select-custom" id="param-model">
+          <!-- Dynamically populated based on task type -->
+          <option value="random_forest" selected>Random Forest Regressor</option>
+          <option value="linear_regression">Linear Regression</option>
+          <option value="polynomial_regression">Polynomial Regression (Deg 2)</option>
+          <option value="decision_tree">Decision Tree Regressor</option>
+          <option value="svm">Support Vector Regressor (SVR)</option>
+          <option value="knn">K-Nearest Neighbors (KNN)</option>
+          <option value="mlp">Multi-Layer Perceptron (Neural Net)</option>
+        </select>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6">
+        <label class="form-label small text-secondary fw-bold">Train / Test Split</label>
+        <select class="form-select form-select-custom" id="param-split">
+          <option value="0.2" selected>80% Train / 20% Test</option>
+          <option value="0.15">85% Train / 15% Test</option>
+          <option value="0.3">70% Train / 30% Test</option>
+        </select>
+      </div>
+
+      <div class="col-lg-1 col-md-4 col-sm-6">
+        <label class="form-label small text-secondary fw-bold">Scaler</label>
+        <select class="form-select form-select-custom" id="param-scaler">
+          <option value="standard" selected>Standard</option>
+          <option value="minmax">MinMax</option>
+        </select>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-12">
+        <button class="btn btn-primary-glow w-100 justify-content-center" id="btn-train-model">
+          <i class="fa-solid fa-play"></i> Run Training
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Loading Indicator -->
+  <div id="ml-loading" class="text-center py-5 d-none">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
+    <div class="mt-3 text-light fw-bold">Training Model & Computing Metrics...</div>
+    <div class="text-secondary small">Evaluating Cross Validation and generating recursive forecasts</div>
+  </div>
+
+  <!-- Results Viewport -->
+  <div id="ml-results">
+    
+    <!-- 4 Evaluation Metrics Cards -->
+    <div class="row g-3 mb-4" id="metrics-cards-row">
+      <div class="col-xl-3 col-sm-6">
+        <div class="glass-card stat-card">
+          <div class="stat-label" id="metric-1-lbl">RMSE (Root Mean Sq)</div>
+          <div class="stat-value text-light font-mono" id="metric-1-val">--</div>
+          <span class="stat-badge positive" id="metric-1-sub">Lower is superior</span>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6">
+        <div class="glass-card stat-card">
+          <div class="stat-label" id="metric-2-lbl">MAE (Mean Absolute)</div>
+          <div class="stat-value text-light font-mono" id="metric-2-val">--</div>
+          <span class="stat-badge positive" id="metric-2-sub">Avg error in USD</span>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6">
+        <div class="glass-card stat-card">
+          <div class="stat-label" id="metric-3-lbl">R² Score (Fit)</div>
+          <div class="stat-value text-light font-mono" id="metric-3-val">--</div>
+          <span class="stat-badge positive" id="metric-3-sub">1.0 = Ideal fit</span>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6">
+        <div class="glass-card stat-card">
+          <div class="stat-label" id="metric-4-lbl">Next Day Predicted</div>
+          <div class="stat-value text-cyan font-mono" id="metric-4-val">--</div>
+          <span class="stat-badge positive" id="metric-4-sub">Forecast Price</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actual vs Predicted Interactive Chart -->
+    <div class="row g-4 mb-4">
+      <div class="col-12">
+        <div class="glass-card">
+          <div class="card-title-row">
+            <div>
+              <h5><i class="fa-solid fa-chart-line text-primary"></i> Actual vs Predicted Price Trajectory</h5>
+              <div class="text-secondary small" id="chart-subtitle">Testing Partition Price Curve & Forward Forecast</div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-secondary-subtle text-secondary" id="cv-mean-badge">5-Fold CV: --</span>
+            </div>
+          </div>
+          <div id="apex-pred-chart" style="min-height: 400px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Future 7-Day Forecast & Feature Importance / Confusion Matrix -->
+    <div class="row g-4">
+      
+      <!-- Multi-Day Forecast Table -->
+      <div class="col-lg-6" id="forecast-table-container">
+        <div class="glass-card h-100">
+          <div class="card-title-row">
+            <h5><i class="fa-solid fa-calendar-days text-success"></i> 7-Day Recursive Price Forecast</h5>
+            <span class="badge bg-success-subtle text-success">Forward Projections</span>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Horizon</th>
+                  <th>Forecast Date</th>
+                  <th>Predicted Price</th>
+                  <th class="text-end">Implied Move</th>
+                </tr>
+              </thead>
+              <tbody id="future-table-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Importance / Classification Matrix -->
+      <div class="col-lg-6">
+        <div class="glass-card h-100">
+          <div class="card-title-row">
+            <h5 id="insights-panel-title"><i class="fa-solid fa-chart-bar text-warning"></i> Feature Importance</h5>
+            <span class="badge bg-primary-subtle text-primary" id="insights-badge">Predictive Signals</span>
+          </div>
+
+          <!-- Feature Importance Container -->
+          <div id="feature-importance-container">
+            <div id="apex-importance-chart" style="min-height: 280px;"></div>
+          </div>
+
+          <!-- Confusion Matrix Container (for classification) -->
+          <div id="confusion-matrix-container" class="d-none">
+            <div class="p-3 text-center">
+              <div class="row g-2 justify-content-center" style="max-width: 380px; margin: 0 auto;">
+                <div class="col-6">
+                  <div class="p-3 rounded-3" style="background: rgba(16, 185, 129, 0.2); border: 1px solid var(--accent-green);">
+                    <div class="small text-muted fw-bold">True Positive (Up)</div>
+                    <div class="fs-3 fw-bold text-success font-mono" id="cm-tp">0</div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="p-3 rounded-3" style="background: rgba(244, 63, 94, 0.2); border: 1px solid var(--accent-red);">
+                    <div class="small text-muted fw-bold">False Positive</div>
+                    <div class="fs-3 fw-bold text-danger font-mono" id="cm-fp">0</div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="p-3 rounded-3" style="background: rgba(244, 63, 94, 0.2); border: 1px solid var(--accent-red);">
+                    <div class="small text-muted fw-bold">False Negative</div>
+                    <div class="fs-3 fw-bold text-danger font-mono" id="cm-fn">0</div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="p-3 rounded-3" style="background: rgba(16, 185, 129, 0.2); border: 1px solid var(--accent-green);">
+                    <div class="small text-muted fw-bold">True Negative (Down)</div>
+                    <div class="fs-3 fw-bold text-success font-mono" id="cm-tn">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const symbolSelect = document.getElementById('param-symbol');
+  const taskSelect = document.getElementById('param-task');
+  const modelSelect = document.getElementById('param-model');
+  const splitSelect = document.getElementById('param-split');
+  const scalerSelect = document.getElementById('param-scaler');
+  const trainBtn = document.getElementById('btn-train-model');
+  const loadingDiv = document.getElementById('ml-loading');
+  const resultsDiv = document.getElementById('ml-results');
+
+  let predChart = null;
+  let featChart = null;
+
+  // Regression Models List
+  const regressionModels = [
+    { key: 'random_forest', name: 'Random Forest Regressor' },
+    { key: 'linear_regression', name: 'Linear Regression' },
+    { key: 'polynomial_regression', name: 'Polynomial Regression (Deg 2)' },
+    { key: 'decision_tree', name: 'Decision Tree Regressor' },
+    { key: 'svm', name: 'Support Vector Regressor (SVR)' },
+    { key: 'knn', name: 'K-Nearest Neighbors (KNN)' },
+    { key: 'mlp', name: 'Multi-Layer Perceptron (Neural Net)' }
+  ];
+
+  // Classification Models List
+  const classificationModels = [
+    { key: 'random_forest', name: 'Random Forest Classifier' },
+    { key: 'logistic_regression', name: 'Logistic Regression' },
+    { key: 'decision_tree', name: 'Decision Tree Classifier' },
+    { key: 'svm', name: 'Support Vector Machine (SVC)' },
+    { key: 'knn', name: 'K-Nearest Neighbors (KNN)' },
+    { key: 'naive_bayes', name: 'Gaussian Naive Bayes' },
+    { key: 'mlp', name: 'Multi-Layer Perceptron Classifier' }
+  ];
+
+  // Switch model options when task objective changes
+  taskSelect.addEventListener('change', () => {
+    const isClf = taskSelect.value === 'classification';
+    const list = isClf ? classificationModels : regressionModels;
+    modelSelect.innerHTML = '';
+    list.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.key;
+      opt.textContent = m.name;
+      modelSelect.appendChild(opt);
+    });
+  });
+
+  // Run initial training on page load
+  runTraining();
+
+  trainBtn.addEventListener('click', runTraining);
+
+  function runTraining() {
+    const symbol = symbolSelect.value;
+    const task = taskSelect.value;
+    const model = modelSelect.value;
+    const split = splitSelect.value;
+    const scaler = scalerSelect.value;
+
+    // Update download links
+    document.getElementById('btn-download-pdf').href = `/api/download/report/pdf?symbol=${symbol}&model=${model}`;
+    document.getElementById('btn-download-csv').href = `/api/download/report/csv?symbol=${symbol}&model=${model}`;
+
+    loadingDiv.classList.remove('d-none');
+    resultsDiv.classList.add('opacity-50');
+
+    fetch('/api/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        symbol: symbol,
+        task_type: task,
+        model_key: model,
+        test_size: split,
+        scaler_type: scaler
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      loadingDiv.classList.add('d-none');
+      resultsDiv.classList.remove('opacity-50');
+
+      if (data.error) {
+        showToast(data.error, 'danger');
+        return;
+      }
+
+      renderMetrics(data, task);
+      renderChart(data, task);
+
+      if (task === 'regression') {
+        renderFutureTable(data);
+        renderFeatureImportance(data.feature_importance);
+        document.getElementById('confusion-matrix-container').classList.add('d-none');
+        document.getElementById('feature-importance-container').classList.remove('d-none');
+        document.getElementById('insights-panel-title').innerHTML = '<i class="fa-solid fa-chart-bar text-warning"></i> Feature Importance';
+      } else {
+        renderConfusionMatrix(data.confusion_matrix);
+        document.getElementById('confusion-matrix-container').classList.remove('d-none');
+        document.getElementById('feature-importance-container').classList.add('d-none');
+        document.getElementById('insights-panel-title').innerHTML = '<i class="fa-solid fa-table-cells text-warning"></i> Confusion Matrix';
+      }
+    })
+    .catch(err => {
+      loadingDiv.classList.add('d-none');
+      resultsDiv.classList.remove('opacity-50');
+      console.error(err);
+      showToast('Error executing training pipeline.', 'danger');
+    });
+  }
+
+  function renderMetrics(data, task) {
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const m = data.metrics;
+
+    if (task === 'regression') {
+      document.getElementById('metric-1-lbl').textContent = 'RMSE (Root Mean Sq)';
+      document.getElementById('metric-1-val').textContent = m.rmse;
+      document.getElementById('metric-1-sub').textContent = 'Lower is better';
+
+      document.getElementById('metric-2-lbl').textContent = 'MAE (Mean Absolute)';
+      document.getElementById('metric-2-val').textContent = m.mae;
+      document.getElementById('metric-2-sub').textContent = 'Avg error in USD';
+
+      document.getElementById('metric-3-lbl').textContent = 'R² Score (Goodness of Fit)';
+      document.getElementById('metric-3-val').textContent = m.r2;
+      document.getElementById('metric-3-sub').textContent = '1.0 = Ideal fit';
+
+      document.getElementById('metric-4-lbl').textContent = 'Next Day Forecast';
+      document.getElementById('metric-4-val').textContent = '$' + data.next_day_prediction;
+      document.getElementById('metric-4-sub').textContent = 'Predicted Close';
+
+      document.getElementById('cv-mean-badge').textContent = data.cv_mean ? `5-Fold CV Mean R²: ${data.cv_mean}` : 'CV Completed';
+    } else {
+      document.getElementById('metric-1-lbl').textContent = 'Accuracy Rate';
+      document.getElementById('metric-1-val').textContent = m.accuracy + '%';
+      document.getElementById('metric-1-sub').textContent = 'Overall correct';
+
+      document.getElementById('metric-2-lbl').textContent = 'Precision';
+      document.getElementById('metric-2-val').textContent = m.precision + '%';
+      document.getElementById('metric-2-sub').textContent = 'Positive predictive';
+
+      document.getElementById('metric-3-lbl').textContent = 'F1-Score';
+      document.getElementById('metric-3-val').textContent = m.f1_score + '%';
+      document.getElementById('metric-3-sub').textContent = 'Harmonic mean';
+
+      document.getElementById('metric-4-lbl').textContent = 'Next Movement';
+      document.getElementById('metric-4-val').textContent = data.next_day_direction;
+      document.getElementById('metric-4-sub').textContent = `${data.next_day_confidence}% Confidence`;
+
+      document.getElementById('cv-mean-badge').textContent = `Signal: ${data.signal}`;
+    }
+  }
+
+  function renderChart(data, task) {
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const textColor = isDark ? '#94A3B8' : '#475569';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)';
+
+    let series = [];
+    let xaxisCategories = [];
+
+    if (task === 'regression') {
+      xaxisCategories = [...data.dates_test, ...data.future_dates];
+
+      // Actual Price series
+      const actualExtended = [...data.actual, ...new Array(data.future_dates.length).fill(null)];
+      // Predicted Price series
+      const predExtended = [...data.predicted, ...new Array(data.future_dates.length).fill(null)];
+      // Future Forecast series (connecting last predicted to future points)
+      const futureSeries = new Array(data.dates_test.length - 1).fill(null);
+      futureSeries.push(data.predicted[data.predicted.length - 1]);
+      data.future_predictions.forEach(p => futureSeries.push(p));
+
+      series = [
+        { name: 'Actual Price', type: 'line', data: actualExtended },
+        { name: 'Model Prediction', type: 'line', data: predExtended },
+        { name: '7-Day Future Forecast', type: 'line', data: futureSeries }
+      ];
+    } else {
+      xaxisCategories = data.dates_test;
+      series = [
+        { name: 'Actual Direction (1=Up, 0=Down)', type: 'line', data: data.actual },
+        { name: 'Predicted Direction', type: 'line', data: data.predicted }
+      ];
+    }
+
+    const options = {
+      chart: {
+        height: 380,
+        type: 'line',
+        background: 'transparent',
+        toolbar: { show: true }
+      },
+      colors: ['#3B82F6', '#10B981', '#F59E0B'],
+      stroke: {
+        width: [2.5, 2.5, 3],
+        curve: 'smooth',
+        dashArray: [0, 0, 5]
+      },
+      series: series,
+      xaxis: {
+        categories: xaxisCategories,
+        labels: { style: { colors: textColor }, rotate: -30 }
+      },
+      yaxis: {
+        labels: {
+          style: { colors: textColor },
+          formatter: val => val !== null && val !== undefined ? (task === 'regression' ? '$' + Number(val).toFixed(1) : val) : ''
+        }
+      },
+      grid: { borderColor: gridColor },
+      theme: { mode: isDark ? 'dark' : 'light' }
+    };
+
+    if (predChart) predChart.destroy();
+    predChart = new ApexCharts(document.querySelector("#apex-pred-chart"), options);
+    predChart.render();
+  }
+
+  function renderFutureTable(data) {
+    const tbody = document.getElementById('future-table-tbody');
+    if (!tbody || !data.future_dates) return;
+    tbody.innerHTML = '';
+    const lastP = data.last_actual_price;
+
+    data.future_dates.forEach((dt, idx) => {
+      const predP = data.future_predictions[idx];
+      const diffPct = ((predP - lastP) / lastP) * 100;
+      const isPos = diffPct >= 0;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="text-secondary fw-semibold">Day +${idx + 1}</td>
+        <td class="text-light fw-medium">${dt}</td>
+        <td class="font-mono fw-bold text-light">$${predP.toFixed(2)}</td>
+        <td class="text-end">
+          <span class="stat-badge ${isPos ? 'positive' : 'negative'} font-mono">
+            ${isPos ? '+' : ''}${diffPct.toFixed(2)}%
+          </span>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderFeatureImportance(importances) {
+    if (!importances) return;
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const textColor = isDark ? '#94A3B8' : '#475569';
+
+    const keys = Object.keys(importances);
+    const values = Object.values(importances);
+
+    const options = {
+      chart: { type: 'bar', height: 260, background: 'transparent', toolbar: { show: false } },
+      plotOptions: { bar: { horizontal: true, borderRadius: 4 } },
+      colors: ['#8B5CF6'],
+      series: [{ name: 'Weight', data: values }],
+      xaxis: { categories: keys, labels: { style: { colors: textColor } } },
+      yaxis: { labels: { style: { colors: textColor } } },
+      grid: { borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)' },
+      theme: { mode: isDark ? 'dark' : 'light' }
+    };
+
+    if (featChart) featChart.destroy();
+    featChart = new ApexCharts(document.querySelector("#apex-importance-chart"), options);
+    featChart.render();
+  }
+
+  function renderConfusionMatrix(cm) {
+    if (!cm) return;
+    document.getElementById('cm-tp').textContent = cm.tp;
+    document.getElementById('cm-fp').textContent = cm.fp;
+    document.getElementById('cm-fn').textContent = cm.fn;
+    document.getElementById('cm-tn').textContent = cm.tn;
+  }
+});
+</script>
+{% endblock %}

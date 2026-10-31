@@ -1,0 +1,401 @@
+{% extends 'base.html' %}
+
+{% block title %}Technical Analysis | {{ symbol }} | StockAI{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+  
+  <!-- Header Bar -->
+  <div class="glass-card mb-4">
+    <div class="row align-items-center">
+      <div class="col-md-6 d-flex align-items-center gap-3">
+        <div class="logo-badge" style="width: 48px; height: 48px; font-size: 1.5rem;">
+          <i class="fa-solid fa-chart-candlestick"></i>
+        </div>
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <h3 class="fw-bold mb-0 text-light">{{ symbol }}</h3>
+            <span class="badge bg-primary-subtle text-primary">{{ stats.name or symbol }}</span>
+            <span class="badge bg-secondary-subtle text-secondary">{{ stats.sector or 'Equities' }}</span>
+          </div>
+          <div class="text-secondary small mt-1">
+            Historical Price Charts, Moving Averages, RSI, MACD & Quantitative Signals
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 text-md-end mt-3 mt-md-0 d-flex align-items-center justify-content-md-end gap-2 flex-wrap">
+        <!-- Stock Selector -->
+        <select class="form-select form-select-custom" style="width: 170px;" onchange="window.location.href='/analysis?symbol=' + this.value">
+          {% for sym, info in supported_stocks.items() %}
+          <option value="{{ sym }}" {% if sym == symbol %}selected{% endif %}>{{ sym }} - {{ info.name.split(' ')[0] }}</option>
+          {% endfor %}
+        </select>
+        
+        <a href="{{ url_for('main.prediction', symbol=symbol) }}" class="btn-primary-glow">
+          <i class="fa-solid fa-brain"></i> Predict with ML
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Realtime Price & Signal Snapshot -->
+  <div class="row g-3 mb-4">
+    <div class="col-lg-3 col-sm-6">
+      <div class="glass-card stat-card">
+        <div class="stat-label">Current Close Price</div>
+        <div class="stat-value text-light" id="stat-price">${{ stats.latest_price or '--' }}</div>
+        <span class="stat-badge {% if stats.day_change_pct >= 0 %}positive{% else %}negative{% endif %} font-mono">
+          {% if stats.day_change_pct >= 0 %}+{% endif %}{{ stats.day_change_pct or 0 }}% Today
+        </span>
+      </div>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+      <div class="glass-card stat-card">
+        <div class="stat-label">AI Quantitative Signal</div>
+        <div class="stat-value" id="stat-signal-val">
+          <span class="badge badge-signal-buy" id="stat-rec-badge">CALCULATING...</span>
+        </div>
+        <div class="text-muted small" id="stat-confidence">Evaluating 5 technical models</div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+      <div class="glass-card stat-card">
+        <div class="stat-label">RSI (14-Day)</div>
+        <div class="stat-value text-light font-mono" id="stat-rsi">--</div>
+        <div class="text-secondary small" id="stat-rsi-status">Oversold &lt; 30 | Overbought &gt; 70</div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+      <div class="glass-card stat-card">
+        <div class="stat-label">Annualized Volatility</div>
+        <div class="stat-value text-light font-mono">{{ stats.ann_volatility or 22 }}%</div>
+        <div class="text-muted small">Risk Class: <b class="text-light">{{ stats.risk_level or 'Medium' }}</b></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Candlestick / Indicator Chart -->
+  <div class="row g-4 mb-4">
+    <div class="col-12">
+      <div class="glass-card">
+        <div class="card-title-row flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-3">
+            <h5 class="mb-0"><i class="fa-solid fa-chart-line text-primary"></i> Price Action & Technical Overlays</h5>
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn btn-outline-secondary active" id="btn-chart-candlestick">Candlestick</button>
+              <button type="button" class="btn btn-outline-secondary" id="btn-chart-line">Line</button>
+            </div>
+          </div>
+
+          <!-- Overlay Toggle Pills -->
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="form-check form-check-inline mb-0">
+              <input class="form-check-input" type="checkbox" id="check-sma20" checked>
+              <label class="form-check-label small text-secondary" for="check-sma20">SMA 20</label>
+            </div>
+            <div class="form-check form-check-inline mb-0">
+              <input class="form-check-input" type="checkbox" id="check-sma50" checked>
+              <label class="form-check-label small text-secondary" for="check-sma50">SMA 50</label>
+            </div>
+            <div class="form-check form-check-inline mb-0">
+              <input class="form-check-input" type="checkbox" id="check-bb" checked>
+              <label class="form-check-label small text-secondary" for="check-bb">Bollinger Bands</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Chart Container -->
+        <div id="apex-main-chart" style="min-height: 420px;"></div>
+        
+        <!-- Volume Sub-chart -->
+        <div class="mt-2">
+          <div class="small text-muted fw-bold mb-1">Trading Volume</div>
+          <div id="apex-volume-chart" style="min-height: 120px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RSI & MACD Subcharts + Buy/Sell Signal Matrix -->
+  <div class="row g-4">
+    <!-- Sub-charts (RSI & MACD) -->
+    <div class="col-lg-6">
+      <div class="glass-card mb-4">
+        <div class="card-title-row">
+          <h5><i class="fa-solid fa-wave-square text-cyan"></i> Relative Strength Index (RSI 14)</h5>
+        </div>
+        <div id="apex-rsi-chart" style="min-height: 180px;"></div>
+      </div>
+
+      <div class="glass-card">
+        <div class="card-title-row">
+          <h5><i class="fa-solid fa-sliders text-purple"></i> MACD (12, 26, 9) & Signal Line</h5>
+        </div>
+        <div id="apex-macd-chart" style="min-height: 180px;"></div>
+      </div>
+    </div>
+
+    <!-- Buy / Hold / Sell Matrix Table -->
+    <div class="col-lg-6">
+      <div class="glass-card h-100">
+        <div class="card-title-row">
+          <h5><i class="fa-solid fa-list-check text-success"></i> Quantitative Decision Matrix</h5>
+          <span class="badge bg-primary-subtle text-primary">Multi-Model Fusion</span>
+        </div>
+        <p class="text-secondary small mb-3">
+          Our rule-based engine synthesizes momentum, trend-following, and mean-reversion signals to compute a unified conviction score.
+        </p>
+
+        <div class="table-responsive">
+          <table class="custom-table" id="signals-table">
+            <thead>
+              <tr>
+                <th>Indicator</th>
+                <th>Observed Metric</th>
+                <th>Market Condition</th>
+                <th class="text-end">Action</th>
+              </tr>
+            </thead>
+            <tbody id="signals-tbody">
+              <tr>
+                <td colspan="4" class="text-center text-muted py-4">
+                  <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                  Analyzing quantitative signals...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-4 p-3 rounded-3" style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle);">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-light fw-bold">Ready to forecast upcoming prices?</span>
+            <a href="{{ url_for('main.prediction', symbol=symbol) }}" class="btn btn-sm btn-primary-glow">
+              Train ML Model <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+          <div class="text-muted small">
+            Compare Linear Regression, Random Forest, Support Vector Machines, and Neural Networks on {{ symbol }} data.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const symbol = "{{ symbol }}";
+  let chartData = null;
+  let mainChart = null;
+  let volChart = null;
+  let rsiChart = null;
+  let macdChart = null;
+  let currentChartType = 'candlestick';
+
+  // 1. Fetch Chart Data & Technical Signals
+  Promise.all([
+    fetch(`/api/chart-data/${symbol}`).then(res => res.json()),
+    fetch(`/api/technical-signals/${symbol}`).then(res => res.json())
+  ]).then(([data, signals]) => {
+    chartData = data;
+    renderMainCharts(data);
+    renderSignals(signals);
+  }).catch(err => {
+    console.error("Error loading chart data:", err);
+  });
+
+  function renderSignals(sig) {
+    if (!sig) return;
+    const recBadge = document.getElementById('stat-rec-badge');
+    const confLabel = document.getElementById('stat-confidence');
+    const rsiVal = document.getElementById('stat-rsi');
+    const rsiStatus = document.getElementById('stat-rsi-status');
+
+    if (recBadge) {
+      recBadge.textContent = sig.recommendation;
+      recBadge.className = 'badge ' + (sig.recommendation.includes('BUY') ? 'badge-signal-buy' : (sig.recommendation.includes('SELL') ? 'badge-signal-sell' : 'badge-signal-hold'));
+    }
+    if (confLabel) {
+      confLabel.textContent = `Confidence: ${sig.confidence}% | Risk: ${sig.risk_level}`;
+    }
+    if (rsiVal) {
+      rsiVal.textContent = sig.rsi;
+      rsiStatus.textContent = sig.rsi < 30 ? 'Oversold (Bullish Bounce)' : (sig.rsi > 70 ? 'Overbought (Take Profit)' : 'Neutral Momentum');
+    }
+
+    // Render table rows
+    const tbody = document.getElementById('signals-tbody');
+    if (tbody && sig.signals) {
+      tbody.innerHTML = '';
+      sig.signals.forEach(s => {
+        const tr = document.createElement('tr');
+        const badgeClass = s.action === 'BUY' ? 'badge-signal-buy' : (s.action === 'SELL' ? 'badge-signal-sell' : 'badge-signal-hold');
+        tr.innerHTML = `
+          <td class="fw-bold text-light">${s.indicator}</td>
+          <td class="font-mono text-secondary">${s.value}</td>
+          <td><span class="text-light">${s.status}</span></td>
+          <td class="text-end"><span class="badge ${badgeClass}">${s.action}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  }
+
+  function renderMainCharts(data) {
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const textColor = isDark ? '#94A3B8' : '#475569';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)';
+
+    // Main Candlestick / Price Chart
+    const mainSeries = [{
+      name: 'Price',
+      type: currentChartType,
+      data: currentChartType === 'candlestick' ? data.candlesticks : data.dates.map((d, i) => ({ x: d, y: data.close[i] }))
+    }];
+
+    if (document.getElementById('check-sma20').checked) {
+      mainSeries.push({
+        name: 'SMA 20',
+        type: 'line',
+        data: data.dates.map((d, i) => ({ x: d, y: data.sma_20[i] }))
+      });
+    }
+    if (document.getElementById('check-sma50').checked) {
+      mainSeries.push({
+        name: 'SMA 50',
+        type: 'line',
+        data: data.dates.map((d, i) => ({ x: d, y: data.sma_50[i] }))
+      });
+    }
+    if (document.getElementById('check-bb').checked) {
+      mainSeries.push({
+        name: 'BB Upper',
+        type: 'line',
+        data: data.dates.map((d, i) => ({ x: d, y: data.bb_upper[i] }))
+      });
+      mainSeries.push({
+        name: 'BB Lower',
+        type: 'line',
+        data: data.dates.map((d, i) => ({ x: d, y: data.bb_lower[i] }))
+      });
+    }
+
+    const mainOptions = {
+      chart: {
+        id: 'main-stock-chart',
+        height: 380,
+        type: 'line',
+        background: 'transparent',
+        toolbar: { show: true, tools: { download: true, zoom: true, reset: true } }
+      },
+      colors: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899'],
+      stroke: { width: [2, 1.5, 1.5, 1, 1], curve: 'smooth' },
+      series: mainSeries,
+      xaxis: {
+        type: 'category',
+        labels: { style: { colors: textColor } }
+      },
+      yaxis: {
+        labels: {
+          style: { colors: textColor },
+          formatter: val => val ? '$' + val.toFixed(1) : ''
+        }
+      },
+      grid: { borderColor: gridColor },
+      theme: { mode: isDark ? 'dark' : 'light' }
+    };
+
+    if (mainChart) mainChart.destroy();
+    mainChart = new ApexCharts(document.querySelector("#apex-main-chart"), mainOptions);
+    mainChart.render();
+
+    // Volume Chart
+    const volOptions = {
+      chart: { height: 110, type: 'bar', background: 'transparent', toolbar: { show: false } },
+      series: [{ name: 'Volume', data: data.dates.map((d, i) => ({ x: d, y: data.volume[i] })) }],
+      colors: ['#06B6D4'],
+      xaxis: { labels: { show: false } },
+      yaxis: { labels: { style: { colors: textColor }, formatter: val => (val/1e6).toFixed(0) + 'M' } },
+      grid: { borderColor: gridColor },
+      theme: { mode: isDark ? 'dark' : 'light' }
+    };
+    if (volChart) volChart.destroy();
+    volChart = new ApexCharts(document.querySelector("#apex-volume-chart"), volOptions);
+    volChart.render();
+
+    // RSI Chart
+    const rsiOptions = {
+      chart: { height: 160, type: 'line', background: 'transparent', toolbar: { show: false } },
+      series: [{ name: 'RSI 14', data: data.dates.map((d, i) => ({ x: d, y: data.rsi[i] })) }],
+      colors: ['#06B6D4'],
+      stroke: { width: 2 },
+      yaxis: { min: 0, max: 100, tickAmount: 2, labels: { style: { colors: textColor } } },
+      xaxis: { labels: { show: false } },
+      annotations: {
+        yaxis: [
+          { y: 70, borderColor: '#F43F5E', label: { text: 'Overbought (70)', style: { color: '#F43F5E', background: 'transparent' } } },
+          { y: 30, borderColor: '#10B981', label: { text: 'Oversold (30)', style: { color: '#10B981', background: 'transparent' } } }
+        ]
+      },
+      grid: { borderColor: gridColor },
+      theme: { mode: isDark ? 'dark' : 'light' }
+    };
+    if (rsiChart) rsiChart.destroy();
+    rsiChart = new ApexCharts(document.querySelector("#apex-rsi-chart"), rsiOptions);
+    rsiChart.render();
+
+    // MACD Chart
+    const macdOptions = {
+      chart: { height: 160, type: 'line', background: 'transparent', toolbar: { show: false } },
+      series: [
+        { name: 'MACD', type: 'line', data: data.dates.map((d, i) => ({ x: d, y: data.macd[i] })) },
+        { name: 'Signal', type: 'line', data: data.dates.map((d, i) => ({ x: d, y: data.macd_signal[i] })) },
+        { name: 'Hist', type: 'bar', data: data.dates.map((d, i) => ({ x: d, y: data.macd_hist[i] })) }
+      ],
+      colors: ['#3B82F6', '#F59E0B', '#10B981'],
+      stroke: { width: [2, 2, 0] },
+      xaxis: { labels: { show: false } },
+      yaxis: { labels: { style: { colors: textColor } } },
+      grid: { borderColor: gridColor },
+      theme: { mode: isDark ? 'dark' : 'light' }
+    };
+    if (macdChart) macdChart.destroy();
+    macdChart = new ApexCharts(document.querySelector("#apex-macd-chart"), macdOptions);
+    macdChart.render();
+  }
+
+  // Event Listeners for Overlays and Toggles
+  ['check-sma20', 'check-sma50', 'check-bb'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', () => { if (chartData) renderMainCharts(chartData); });
+  });
+
+  const btnCandle = document.getElementById('btn-chart-candlestick');
+  const btnLine = document.getElementById('btn-chart-line');
+  if (btnCandle && btnLine) {
+    btnCandle.addEventListener('click', () => {
+      currentChartType = 'candlestick';
+      btnCandle.classList.add('active');
+      btnLine.classList.remove('active');
+      if (chartData) renderMainCharts(chartData);
+    });
+    btnLine.addEventListener('click', () => {
+      currentChartType = 'line';
+      btnLine.classList.add('active');
+      btnCandle.classList.remove('active');
+      if (chartData) renderMainCharts(chartData);
+    });
+  }
+
+  window.onThemeChanged = () => {
+    if (chartData) renderMainCharts(chartData);
+  };
+});
+</script>
+{% endblock %}
